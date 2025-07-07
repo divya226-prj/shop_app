@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/constants/app_theme.dart';
+import 'package:shop_app/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      theme: AppTheme.lightTheme,
+      home: SplashScreen(),
     );
   }
 }
