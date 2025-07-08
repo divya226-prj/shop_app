@@ -6,7 +6,7 @@ class AppTheme {
     colorScheme: ColorScheme.light(primary: AppColor.primary),
     textTheme: const TextTheme(
       titleLarge: TextStyle(
-        fontSize: 24,
+        fontSize: 30,
         fontWeight: FontWeight.w800,
         color: AppColor.textPrimary,
       ),
@@ -14,6 +14,11 @@ class AppTheme {
         fontSize: 14,
         fontWeight: FontWeight.w600,
         color: AppColor.textSecondary,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: AppColor.primary,
       ),
     ),
   );

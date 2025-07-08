@@ -1,8 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/splash_screen1.dart';
+import 'package:shop_app/toor_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SplashScreen1()),
+        MaterialPageRoute(builder: (context) => ToorScreen()),
       );
     });
   }

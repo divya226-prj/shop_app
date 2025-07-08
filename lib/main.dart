@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_theme.dart';
 import 'package:shop_app/splash_screen.dart';
+import 'package:shop_app/toor_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.lightTheme,
-      home: SplashScreen(),
+      home: ToorScreen(),
     );
   }
 }
