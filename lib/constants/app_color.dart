@@ -6,4 +6,5 @@ class AppColor {
   static const textSecondary = Color(0xFFA8A8A9);
   static const subtext = Color(0xFF676767);
   static const textonprimary = Color(0xFF575757);
+  static const textonsecondary = Color(0xffFFFFFF);
 }

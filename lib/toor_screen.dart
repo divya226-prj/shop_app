@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/custom_text.dart';
+import 'package:shop_app/get_started.dart';
+import 'package:shop_app/toor_screen1.dart';
 
 class ToorScreen extends StatefulWidget {
   const ToorScreen({super.key});
@@ -11,6 +13,11 @@ class ToorScreen extends StatefulWidget {
 }
 
 class _SplashScreen1State extends State<ToorScreen> {
+  final PageController _pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+  int _currentPage = 0;
   final List<Map<String, String>> tourData = [
     {
       "image": AppImage.fashion,
@@ -34,16 +41,18 @@ class _SplashScreen1State extends State<ToorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final PageController pageController = PageController(
-      initialPage: 0,
-      keepPage: true,
-    );
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: PageView(
-          controller: pageController,
-          children: [_tourView(0), _tourView(1), _tourView(2)],
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _currentPage = index;
+            });
+          },
+          children: List.generate(tourData.length, (index) => _tourView(index)),
+          // children: [_tourView(0), _tourView(1), _tourView(2)],
         ),
       ),
     );
@@ -51,8 +60,8 @@ class _SplashScreen1State extends State<ToorScreen> {
 
   Widget _tourView(int index) => Center(
     child: Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // SizedBox(height: 100),
         Container(
@@ -61,7 +70,7 @@ class _SplashScreen1State extends State<ToorScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                "1/",
+                "${_currentPage + 1}/",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.black,
                   fontSize: 20,
@@ -69,39 +78,115 @@ class _SplashScreen1State extends State<ToorScreen> {
               ),
 
               Text(
-                "3",
+                "${tourData.length}",
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey,
                   fontSize: 20,
                 ),
               ),
               Spacer(),
-              Text(
-                "Skip",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Color(0xFF000000),
-                  fontSize: 19,
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GetStarted()),
+                  );
+                },
+                child: Text(
+                  "Skip",
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Color(0xFF000000),
+                    fontSize: 19,
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 150),
-        Image.asset(tourData[index]['image'] ?? ""),
-        Text(
-          (tourData[index]['title'] ?? ""),
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        SizedBox(height: 30),
-        CustomText(),
-        SizedBox(height: 150),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+        // SizedBox(height: 150),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(AppImage.circle),
-              Text("Next", style: Theme.of(context).textTheme.bodySmall),
+              Image.asset(tourData[index]['image'] ?? ""),
+              Text(
+                (tourData[index]['title'] ?? ""),
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              SizedBox(height: 30),
+              CustomText(),
+            ],
+          ),
+        ),
+
+        // SizedBox(height: 150),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _currentPage > 0
+                  ? TextButton(
+                      onPressed: () {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Text(
+                        "Prev",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : SizedBox(width: 60),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(tourData.length, (indexDot) {
+                  return AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: _currentPage == indexDot ? 40 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _currentPage == indexDot
+                          ? AppColor.textPrimary
+                          : AppColor.textSecondary,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  );
+                }),
+              ),
+
+              TextButton(
+                onPressed: () {
+                  if (_currentPage == tourData.length - 1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const GetStarted(),
+                      ),
+                    );
+                  } else {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                },
+                child: Text(
+                  _currentPage == tourData.length - 1 ? "Get Started" : "Next",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.primary,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

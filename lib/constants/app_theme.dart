@@ -20,6 +20,12 @@ class AppTheme {
         fontWeight: FontWeight.w600,
         color: AppColor.primary,
       ),
+      bodyLarge: TextStyle(
+        fontSize: 34,
+        fontWeight: FontWeight.w600,
+        color: AppColor.textonsecondary,
+        fontFamily: "Montserrat",
+      ),
     ),
   );
 }
