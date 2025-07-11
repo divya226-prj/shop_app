@@ -7,4 +7,7 @@ class AppImage {
   static String circle = "$imagepath/circle1_img.png";
   static String rectangle = "$imagepath/rectangle2.png";
   static String getstarted = "$imagepath/getstarted_img.png";
+  static String google = "$imagepath/google_img.png";
+  static String apple = "$imagepath/apple_img.png";
+  static String facebook = "$imagepath/facebook_img.png";
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
+import 'package:shop_app/widgets/styled_button.dart';
+
+import 'package:shop_app/signup_screen.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});
@@ -12,26 +15,22 @@ class GetStarted extends StatefulWidget {
 class _GetStartedState extends State<GetStarted> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Stack(children: [_buildbgimg, _buildcontent]));
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColor.textPrimary, Colors.transparent],
+              ),
+            ),
+            child: _buildbgimg,
+          ),
+          _buildcontent,
+        ],
+      ),
+    );
   }
-
-  Widget _buildbutton(BuildContext context) => SizedBox(
-    width: 279,
-    height: 60,
-    child: ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.primary,
-        padding: EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.horizontal()),
-      ),
-      child: Text(
-        textAlign: TextAlign.center,
-        "Get Started",
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 23),
-      ),
-    ),
-  );
 
   Widget get _buildbodytext => Text(
     "Find it here,buy it now!",
@@ -62,7 +61,12 @@ class _GetStartedState extends State<GetStarted> {
           SizedBox(height: 10),
           _buildbodytext,
           SizedBox(height: 30),
-          _buildbutton(context),
+          CustomButton("Get Started", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SignupScreen()),
+            );
+          }),
         ],
       ),
     ),
