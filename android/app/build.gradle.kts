@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.shop_app"
+    namespace = "com.codexa.shop_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

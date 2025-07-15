@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
@@ -67,6 +68,7 @@ class SignupScreen extends StatelessWidget {
             fontWeight: FontWeight.w400,
             letterSpacing: 1.0,
           ),
+          recognizer: TapGestureRecognizer()..onTap=(){},
         ),
         TextSpan(
           text: " button, you agree \nto the public offer",
@@ -100,7 +102,7 @@ class SignupScreen extends StatelessWidget {
       });
 
   Widget _buildLogin(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 60),
+    padding: const EdgeInsets.symmetric(horizontal: 30),
     child: Row(
       // crossAxisAlignment: CrossAxisAlignment.center,
       children: [

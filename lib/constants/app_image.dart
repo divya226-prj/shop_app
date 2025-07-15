@@ -10,4 +10,6 @@ class AppImage {
   static String google = "$imagepath/google_img.png";
   static String apple = "$imagepath/apple_img.png";
   static String facebook = "$imagepath/facebook_img.png";
+  static String profile = "$imagepath/profile_img.png";
+  static String applogo = "$imagepath/applogo_img.png";
 }

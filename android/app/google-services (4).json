@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167705651884",
+    "project_id": "shop-app-d9f35",
+    "storage_bucket": "shop-app-d9f35.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167705651884:android:702316f560a29333410d09",
+        "android_client_info": {
+          "package_name": "com.codexa.shop_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATVfaDXgrsCeU_KmKeXtMhvsWIe6vx_5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
