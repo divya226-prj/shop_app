@@ -17,22 +17,34 @@ class SignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildTxtCreateAccount(context),
-              _buildTxtFieldEmail(context),
-              _buildTxtFieldPassword(context),
-              _buildTxtConfirmFieldPassword(context),
-              _buildTxtPublicOffer(context),
-              _buildCreateAccount(context),
-              _buildOrTxt,
-              _buildSocialRow(context),
-              _buildLogin(context),
-            ],
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(height: 30),
+                _buildTxtCreateAccount(context),
+                SizedBox(height: 30),
+                _buildTxtFieldEmail(context),
+                SizedBox(height: 30),
+                _buildTxtFieldPassword(context),
+                SizedBox(height: 30),
+                _buildTxtConfirmFieldPassword(context),
+                SizedBox(height: 30),
+                _buildTxtPublicOffer(context),
+                SizedBox(height: 30),
+                _buildCreateAccount(context),
+                SizedBox(height: 30),
+                _buildOrTxt,
+                SizedBox(height: 20),
+                _buildSocialRow(context),
+                SizedBox(height: 20),
+                _buildLogin(context),
+                // SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
@@ -68,7 +80,7 @@ class SignupScreen extends StatelessWidget {
             fontWeight: FontWeight.w400,
             letterSpacing: 1.0,
           ),
-          recognizer: TapGestureRecognizer()..onTap=(){},
+          recognizer: TapGestureRecognizer()..onTap = () {},
         ),
         TextSpan(
           text: " button, you agree \nto the public offer",
