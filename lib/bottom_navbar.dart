@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/home_page.dart';
+import 'package:shop_app/settings.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -17,7 +18,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     Center(child: Text("Wishlist")),
     Center(child: Text("Cart")),
     Center(child: Text("Search")),
-    Center(child: Text("Settings")),
+    Settings(),
   ];
 
   void _onTabTapped(int index) {

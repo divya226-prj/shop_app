@@ -43,5 +43,10 @@ flutter {
     source = "../.."
 }
 apply(plugin = "com.google.gms.google-services")
+dependencies {
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.facebook.android:facebook-android-sdk:16.3.0")
+}
 
 

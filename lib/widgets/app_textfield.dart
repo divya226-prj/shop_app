@@ -62,19 +62,17 @@ class _AppTextfieldState extends State<AppTextfield> {
           prefixIcon: widget.prefixIcon != null
               ? Icon(widget.prefixIcon, size: 24)
               : null,
-          suffixIcon: _obscureText == true
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
-                  child: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                    size: 24,
-                    color: AppColor.tertiary,
-                  ),
-                )
+          suffixIcon: widget.suffixIcon != null
+              ? IconButton(
+                color: AppColor.tertiary, onPressed: () { setState(() {
+                  
+                  _obscureText = !_obscureText;
+                }); }, icon: Icon(
+                  _obscureText
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+                ),
+              )
               : (widget.suffixIcon != null
                     ? Icon(widget.suffixIcon, size: 24)
                     : null),

@@ -1,48 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/bottom_navbar.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/forgot_password.dart';
 import 'package:shop_app/home_page.dart';
 import 'package:shop_app/login_screen.dart';
+import 'package:shop_app/providers/auth_provider.dart';
+import 'package:shop_app/signup_screen.dart';
+import 'package:shop_app/social_logo.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
-class LoginScreen extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildTxtWelcomeBack(context),
-              SizedBox(height: 20),
-              _buildTxtFieldEmail(context),
-              SizedBox(height: 30),
-              _buildTxtFieldPassword(context),
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
-              // SizedBox(height: 10),
-              _buildTxtForgotPassword(context),
-              SizedBox(height: 20),
-              _buildLogin(context),
-              SizedBox(height: 80),
-              _buildOrTxt,
-              SizedBox(height: 20),
-              _buildSocialRow(context),
-              SizedBox(height: 20),
-              _buildSignup(context),
-            ],
+class _LoginScreenState extends State<LoginScreen> {
+  bool isLoading = false;
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildTxtWelcomeBack(context),
+                    SizedBox(height: 20),
+                    _buildTxtFieldEmail(context),
+                    SizedBox(height: 30),
+                    _buildTxtFieldPassword(context),
+
+                    SizedBox(height: 10),
+                    _buildTxtForgotPassword(context),
+                    SizedBox(height: 20),
+                    _buildLogin(context),
+                    SizedBox(height: 80),
+                    _buildOrTxt,
+                    SizedBox(height: 20),
+                    _buildSocialRow(context),
+                    SizedBox(height: 20),
+                    _buildSignup(context),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+        if (isLoading)
+          Center(
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ],
     );
   }
 
@@ -56,6 +83,7 @@ class LoginScreen extends StatelessWidget {
       ),
     ),
   );
+
   Widget _buildTxtForgotPassword(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.end,
     children: [
@@ -82,19 +110,76 @@ class LoginScreen extends StatelessWidget {
   Widget _buildSocialRow(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      _setSocialLogo(AppImage.google),
+      SocialLogo(AppImage.google, () async {
+        setState(() {
+          isLoading = true;
+        });
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final result = await authProvider.signInWithGoogle();
+        setState(() {
+          isLoading = false;
+        });
+        if (result == null) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Login successfully")));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Not able to signin with google")),
+          );
+        }
+      }),
       SizedBox(width: 10),
-      _setSocialLogo(AppImage.apple),
+      SocialLogo(AppImage.apple, () {}),
       SizedBox(width: 10),
-      _setSocialLogo(AppImage.facebook),
+      SocialLogo(AppImage.facebook, () async {
+        setState(() {
+          isLoading = true;
+        });
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final result = await authProvider.signInWithFacebook();
+        setState(() {
+          isLoading = false;
+        });
+        if (result == null) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Login successfully")));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Not able to login with facebook")),
+          );
+        }
+      }),
     ],
   );
 
-  Widget _buildLogin(BuildContext context) => CustomButton("Login", () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CustomBottomNavBar()),
+  Widget _buildLogin(BuildContext context) => CustomButton("Login", () async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    String? result = await authProvider.login(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
     );
+
+    if (result == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result)));
+    }
   });
 
   Widget _buildSignup(BuildContext context) => Padding(
@@ -110,7 +195,7 @@ class LoginScreen extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
+              MaterialPageRoute(builder: (context) => SignupScreen()),
             );
           },
           child: Text(
@@ -149,16 +234,5 @@ class LoginScreen extends StatelessWidget {
     prefixIcon: Icons.lock,
     suffixIcon: Icons.visibility,
     obsecureText: true,
-  );
-
-  Widget _setSocialLogo(String? name) => Container(
-    height: 54,
-    width: 54,
-    decoration: BoxDecoration(
-      color: const Color.fromARGB(99, 241, 173, 185),
-      borderRadius: BorderRadius.all(Radius.circular(360)),
-      border: Border.all(color: AppColor.primary),
-    ),
-    child: Image.asset(name ?? ""),
   );
 }

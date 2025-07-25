@@ -1,53 +1,80 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/bottom_navbar.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/login_screen.dart';
+import 'package:shop_app/providers/auth_provider.dart';
+import 'package:shop_app/social_logo.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
+import 'package:shop_app/widgets/textfield_validaters.dart';
 
-class SignupScreen extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmpasswordController =
-      TextEditingController();
+class SignupScreen extends StatefulWidget {
   SignupScreen({super.key});
 
   @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  bool isLoading = false;
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+  final TextEditingController _confirmpasswordController =
+      TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(height: 30),
-                _buildTxtCreateAccount(context),
-                SizedBox(height: 30),
-                _buildTxtFieldEmail(context),
-                SizedBox(height: 30),
-                _buildTxtFieldPassword(context),
-                SizedBox(height: 30),
-                _buildTxtConfirmFieldPassword(context),
-                SizedBox(height: 30),
-                _buildTxtPublicOffer(context),
-                SizedBox(height: 30),
-                _buildCreateAccount(context),
-                SizedBox(height: 30),
-                _buildOrTxt,
-                SizedBox(height: 20),
-                _buildSocialRow(context),
-                SizedBox(height: 20),
-                _buildLogin(context),
-                // SizedBox(height: 40),
-              ],
+    return Stack(
+      children: [
+        Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(height: 30),
+                    _buildTxtCreateAccount(context),
+                    SizedBox(height: 30),
+                    _buildTxtFieldEmail(context),
+                    SizedBox(height: 30),
+                    _buildTxtFieldPassword(context),
+                    SizedBox(height: 30),
+                    _buildTxtConfirmFieldPassword(context),
+                    SizedBox(height: 30),
+                    _buildTxtPublicOffer(context),
+                    SizedBox(height: 30),
+                    _buildCreateAccount(context),
+                    SizedBox(height: 30),
+                    _buildOrTxt,
+                    SizedBox(height: 20),
+                    _buildSocialRow(context),
+                    SizedBox(height: 20),
+                    _buildLogin(context),
+                    // SizedBox(height: 40),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        if (isLoading)
+          Center(
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ],
     );
   }
 
@@ -97,21 +124,93 @@ class SignupScreen extends StatelessWidget {
   Widget _buildSocialRow(BuildContext context) => Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      _setSocialLogo(AppImage.google),
+      SocialLogo(AppImage.google, () async {
+        setState(() {
+          isLoading = true;
+        });
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final result = await authProvider.signInWithGoogle();
+        setState(() {
+          isLoading = false;
+        });
+        if (result == null) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Login successfully")));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Not able to signin with google")),
+          );
+        }
+      }),
       SizedBox(width: 10),
-      _setSocialLogo(AppImage.apple),
+      SocialLogo(AppImage.apple, () {}),
       SizedBox(width: 10),
-      _setSocialLogo(AppImage.facebook),
+      SocialLogo(AppImage.facebook, ()async {
+       setState(() {
+         isLoading=true;
+       });
+       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+       final result = await authProvider.signInWithFacebook();
+       setState(() {
+         isLoading=false;
+       });
+       if (result == "success") {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Login successful")),
+  );
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => CustomBottomNavBar()));
+} else {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(result ?? "Facebook login failed")),
+);
+}
+}),
     ],
   );
 
-  Widget _buildCreateAccount(BuildContext context) =>
-      CustomButton("Create Account", () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+  Widget _buildCreateAccount(BuildContext context) => CustomButton(
+    "Create Account",
+    () async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final confirmPassword = _confirmpasswordController.text.trim();
+      final emailError = TextfieldValidaters.emailValidator(email);
+      final passwordError = TextfieldValidaters.passwordValidator(password);
+      final confirmpasswordError = TextfieldValidaters.confirmpasswordValidator(
+        confirmPassword,
+        password,
+      );
+
+      if (emailError != null ||
+          passwordError != null ||
+          confirmpasswordError != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(emailError ?? confirmpasswordError ?? passwordError!),
+          ),
         );
-      });
+      }
+
+      String? result = await authProvider.signup(email, password);
+
+      if (result == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result)));
+      }
+    },
+  );
 
   Widget _buildLogin(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -173,16 +272,5 @@ class SignupScreen extends StatelessWidget {
     prefixIcon: Icons.lock,
     suffixIcon: Icons.visibility,
     obsecureText: true,
-  );
-
-  Widget _setSocialLogo(String? name) => Container(
-    height: 54,
-    width: 54,
-    decoration: BoxDecoration(
-      color: const Color.fromARGB(99, 241, 173, 185),
-      borderRadius: BorderRadius.all(Radius.circular(360)),
-      border: Border.all(color: AppColor.primary),
-    ),
-    child: Image.asset(name ?? ""),
   );
 }
