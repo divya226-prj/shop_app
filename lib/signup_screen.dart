@@ -32,35 +32,40 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Scaffold(
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(height: 30),
-                    _buildTxtCreateAccount(context),
-                    SizedBox(height: 30),
-                    _buildTxtFieldEmail(context),
-                    SizedBox(height: 30),
-                    _buildTxtFieldPassword(context),
-                    SizedBox(height: 30),
-                    _buildTxtConfirmFieldPassword(context),
-                    SizedBox(height: 30),
-                    _buildTxtPublicOffer(context),
-                    SizedBox(height: 30),
-                    _buildCreateAccount(context),
-                    SizedBox(height: 30),
-                    _buildOrTxt,
-                    SizedBox(height: 20),
-                    _buildSocialRow(context),
-                    SizedBox(height: 20),
-                    _buildLogin(context),
-                    // SizedBox(height: 40),
-                  ],
+        GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(height: 30),
+                      _buildTxtCreateAccount(context),
+                      SizedBox(height: 30),
+                      _buildTxtFieldEmail(context),
+                      SizedBox(height: 30),
+                      _buildTxtFieldPassword(context),
+                      SizedBox(height: 30),
+                      _buildTxtConfirmFieldPassword(context),
+                      SizedBox(height: 30),
+                      _buildTxtPublicOffer(context),
+                      SizedBox(height: 30),
+                      _buildCreateAccount(context),
+                      SizedBox(height: 30),
+                      _buildOrTxt,
+                      SizedBox(height: 20),
+                      _buildSocialRow(context),
+                      SizedBox(height: 20),
+                      _buildLogin(context),
+                      // SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -150,26 +155,29 @@ class _SignupScreenState extends State<SignupScreen> {
       SizedBox(width: 10),
       SocialLogo(AppImage.apple, () {}),
       SizedBox(width: 10),
-      SocialLogo(AppImage.facebook, ()async {
-       setState(() {
-         isLoading=true;
-       });
-       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-       final result = await authProvider.signInWithFacebook();
-       setState(() {
-         isLoading=false;
-       });
-       if (result == "success") {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Login successful")),
-  );
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => CustomBottomNavBar()));
-} else {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(result ?? "Facebook login failed")),
-);
-}
-}),
+      SocialLogo(AppImage.facebook, () async {
+        setState(() {
+          isLoading = true;
+        });
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final result = await authProvider.signInWithFacebook();
+        setState(() {
+          isLoading = false;
+        });
+        if (result == "success") {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Login successful")));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result ?? "Facebook login failed")),
+          );
+        }
+      }),
     ],
   );
 
@@ -215,7 +223,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildLogin(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 30),
     child: Row(
-      // crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           "I Already Have an Account ",

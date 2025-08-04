@@ -7,6 +7,7 @@ class AppTextfield extends StatefulWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final bool? obsecureText;
+  final bool? enabled;
   const AppTextfield({
     super.key,
     required this.controller,
@@ -14,6 +15,7 @@ class AppTextfield extends StatefulWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.obsecureText = false,
+    this.enabled,
   });
 
   @override
@@ -46,6 +48,7 @@ class _AppTextfieldState extends State<AppTextfield> {
         ),
       ),
       child: TextField(
+        enabled: widget.enabled,
         controller: widget.controller,
         obscureText: _obscureText ?? false,
         decoration: InputDecoration(
@@ -64,15 +67,18 @@ class _AppTextfieldState extends State<AppTextfield> {
               : null,
           suffixIcon: widget.suffixIcon != null
               ? IconButton(
-                color: AppColor.tertiary, onPressed: () { setState(() {
-                  
-                  _obscureText = !_obscureText;
-                }); }, icon: Icon(
-                  _obscureText
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-                ),
-              )
+                  color: AppColor.tertiary,
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                  icon: Icon(
+                    _obscureText
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                )
               : (widget.suffixIcon != null
                     ? Icon(widget.suffixIcon, size: 24)
                     : null),

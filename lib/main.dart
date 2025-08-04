@@ -12,14 +12,14 @@ import 'package:shop_app/toor_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(providers: [ChangeNotifierProvider(create: (_) => AuthProvider(), 
-  ),
-  ChangeNotifierProvider(create: (_) => ApplicationProvider(), 
-  )
-  ],
-  child: MyApp(),
-   
-  )
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ApplicationProvider()),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 

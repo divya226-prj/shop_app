@@ -15,22 +15,31 @@ class AuthProvider extends ChangeNotifier {
   }
   Future<String?> signInWithFacebook() async {
     try {
-      final LoginResult result = await _facebookAuth.login();
+      final LoginResult result = await _facebookAuth.login(
+        loginBehavior: LoginBehavior.nativeWithFallback,
+        permissions: ['public_profile', 'email'],
+      );
 
       if (result.status == LoginStatus.success) {
         final OAuthCredential credential = FacebookAuthProvider.credential(
-          result.accessToken!.token,
+          result.accessToken!.tokenString ?? "",
         );
 
         final userCred = await _auth.signInWithCredential(credential);
+        final User? firebaseUser = userCred.user;
+        final facebookUserData = await _facebookAuth.getUserData();
+
         final doc = await _firestore
             .collection('users')
-            .doc(userCred.user?.uid)
+            .doc(firebaseUser?.uid)
             .get();
         if (!doc.exists) {
-          await _firestore.collection('users').doc(userCred.user?.uid).set({
-            'uid': userCred.user?.uid,
-            'email': userCred.user?.email ?? 'Add your email',
+          await _firestore.collection('users').doc(firebaseUser?.uid).set({
+            'uid': firebaseUser?.uid,
+            'email':
+                facebookUserData["email"] ??
+                firebaseUser?.email ??
+                'Add your email',
             'username': 'Guest',
             'createdAt': DateTime.now(),
           });
@@ -49,21 +58,25 @@ class AuthProvider extends ChangeNotifier {
   Future<String?> signInWithGoogle() async {
     try {
       final googleUser = await GoogleSignIn().signIn();
-      await googleSignIn.signOut();
       if (googleUser == null) return "Sign in cancelled";
-      final googleAuth = await googleUser?.authentication;
+      final googleAuth = await googleUser.authentication;
       final cred = GoogleAuthProvider.credential(
-        idToken: googleAuth?.idToken,
-        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
       );
       final userCred = await _auth.signInWithCredential(cred);
-      user = userCred.user;
-      final doc = await _firestore.collection('users').doc(user?.uid).get();
+      final User? firebaseUser = userCred.user;
+
+      final doc = await _firestore
+          .collection('users')
+          .doc(firebaseUser?.uid)
+          .get();
       if (!doc.exists) {
-        await _firestore.collection('users').doc(userCred.user?.uid).set({
+        await _firestore.collection('users').doc(firebaseUser?.uid).set({
           'uid': userCred.user?.uid,
-          'email': userCred.user?.email ?? 'Add your email',
-          'username': 'Guest',
+          'email': firebaseUser?.email ?? googleUser.email,
+          'username':
+              firebaseUser?.displayName ?? googleUser.displayName ?? 'Guest',
           'createdAt': DateTime.now(),
         });
       }

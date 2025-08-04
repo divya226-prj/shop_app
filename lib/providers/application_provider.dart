@@ -3,22 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ApplicationProvider extends ChangeNotifier {
-  String username = '';
-  String email = '';
-  String profilePhoto = '';
+  Stream<DocumentSnapshot> get userStream {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return const Stream.empty();
+    }
+    return FirebaseFirestore.instance.collection("users").doc(uid).snapshots();
+  }
 
-  Future<void> fetchUserData() async {
+  Future<void> updateUserField(String fieldName, String value) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
-
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    final data = doc.data();
-
-    if (data != null) {
-      username = data['username'] ?? '';
-      email = data['email'] ?? '';
-      profilePhoto = data['profilePhoto'] ?? '';
-      notifyListeners();
-    }
+    await FirebaseFirestore.instance.collection("users").doc(uid).update({
+      fieldName: value,
+    });
   }
 }

@@ -4,8 +4,6 @@ import 'package:shop_app/bottom_navbar.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/forgot_password.dart';
-import 'package:shop_app/home_page.dart';
-import 'package:shop_app/login_screen.dart';
 import 'package:shop_app/providers/auth_provider.dart';
 import 'package:shop_app/signup_screen.dart';
 import 'package:shop_app/social_logo.dart';
@@ -145,17 +143,17 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           isLoading = false;
         });
-        if (result == null) {
+        if (result == "success") {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text("Login successfully")));
+          ).showSnackBar(SnackBar(content: Text("Login successful")));
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Not able to login with facebook")),
+            SnackBar(content: Text(result ?? "Facebook login failed")),
           );
         }
       }),
@@ -185,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignup(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 50),
     child: Row(
-      // crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           "Create an account ",
