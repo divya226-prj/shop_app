@@ -63,7 +63,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       _buildSocialRow(context),
                       SizedBox(height: 20),
                       _buildLogin(context),
-                      // SizedBox(height: 40),
                     ],
                   ),
                 ),

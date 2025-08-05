@@ -10,13 +10,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(leading: Icon(CupertinoIcons.bars),),
-      // Image.asset(AppImage.logoimg),
-      // SizedBox(
-      //   height: 40,
-      //   width: 40,
-      //   child: Image.asset(AppImage.profile),
-      // ),
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu, color: Colors.black),
@@ -40,7 +33,6 @@ class HomePage extends StatelessWidget {
       ),
 
       body: Column(children: [SizedBox(height: 20), Hometextfield()]),
-      
     );
   }
 }

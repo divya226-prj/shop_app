@@ -114,6 +114,9 @@ class AuthProvider extends ChangeNotifier {
           'email': result.user?.email ?? 'Add your email',
           'username': 'Guest',
           'createdAt': DateTime.now(),
+          'country': 'Select your country',
+          'state': 'Select your state',
+          'city': 'Select your city',
         });
       }
 

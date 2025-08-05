@@ -23,6 +23,4 @@ class SocialLogo extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _setSocialLogo(String? name) =>
 }

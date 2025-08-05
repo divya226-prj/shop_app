@@ -5,8 +5,9 @@ class TextfieldValidaters {
   }
 
   static String? passwordValidator(String password) {
-    if (password.length > 8)
+    if (password.length > 8) {
       return "Invalid password it should contain atleast 8characters";
+    }
     return null;
   }
 

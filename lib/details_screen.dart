@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/constants/app_color.dart';
@@ -15,6 +17,108 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+  final Map<String, Map<String, Map<String, String>>> worldData = {
+    'India': {
+      'Gujarat': {
+        'A': 'Ahmedabad ',
+        'S': 'Surat',
+        'R': 'Rajkot',
+        'v': 'Vadodra',
+      },
+      'Maharashtra': {
+        'A': 'Aurangabad',
+        'K': 'Kolhapur',
+        'S': 'Solapur',
+        'N': 'Nashik',
+      },
+      'Rajasthan': {
+        'P': 'Pushkar',
+        'U': 'Udaipur',
+        'A': 'Ajmer',
+        'B': 'Bikaner',
+      },
+      'Uttar Pradesh': {
+        'M': 'Meerut',
+        'A': 'Agra',
+        'P': 'Prayagraj',
+        'B': 'Bareilly',
+      },
+    },
+    'United Kingdom': {
+      'England': {
+        'l': 'London',
+        'm': 'Manchester',
+        'b': 'Birmingham',
+        'liverpool': 'Liverpool',
+      },
+      'Scotland': {
+        'e': 'Edinburgh',
+        'g': 'Glasgow',
+        'a': 'Aberdeen',
+        'd': 'Dundee',
+      },
+      'Wales': {'c': 'Cardiff', 's': 'Swansea', 'n': 'Newport', 'w': 'Wrexham'},
+      'Nothern Ireland': {
+        'b': 'Belfast',
+        'd': 'Derry',
+        'n': 'Newry',
+        'l': 'Lisburn',
+      },
+    },
+    'Canada': {
+      'Ontario': {
+        't': 'Toronto',
+        'o': 'Ottawa',
+        'k': 'Kitchener',
+        'h': 'Hamilton',
+      },
+      'Quebec': {
+        'm': 'Montreal',
+        'q': 'Quebec City',
+        'l': 'Laval',
+        'g': 'Gatineau',
+      },
+      'British Columbia': {
+        'v': 'Vancouver',
+        's': 'Surrey',
+        'b': 'Burnaby',
+        'r': 'Richmond',
+      },
+      'Alberta': {
+        'c': 'Calgary',
+        'e': 'Edmonton',
+        'l': 'Lethbridge',
+        's': 'St. Albert',
+      },
+    },
+    'United States': {
+      'California': {
+        'l': 'Los Angeles',
+        's': 'San Francisco',
+        's2': 'San Diego',
+        's3': 'Sacramento',
+      },
+      'Texas': {
+        'h': 'Houston',
+        'd': 'Dallas',
+        'a': 'Austin',
+        'f': 'Fort Worth',
+      },
+      'Florida': {
+        'm': 'Miami',
+        'o': 'Orlando',
+        't': 'Tampa',
+        'j': 'Jacksonville',
+      },
+      'New York': {
+        'n': 'New York City',
+        'b': 'Buffalo',
+        'r': 'Rochester',
+        's': 'Syracuse',
+      },
+    },
+  };
+  File? _image;
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
@@ -22,6 +126,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   TextEditingController cityController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+  String? selectedStateKey = "Gujarat";
+  String? selectedCountryKey = 'India';
+  String? selectedCityKey = 'A';
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +180,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                             ),
-                            child: Image.asset(
-                              AppImage.profile,
-                              fit: BoxFit.cover,
-                            ),
+                            child: _image == null
+                                ? Image.asset(
+                                    AppImage.profile,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.file(_image ?? File("")),
                           ),
                           Positioned(
                             right: 0,
@@ -144,7 +253,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         color: AppColor.textPrimary,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     Text(
                       "Pincode",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -154,7 +263,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                     SizedBox(height: 10),
                     AppTextfield(controller: pincodeController, hintText: ""),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     Text(
                       "Address",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -164,17 +273,34 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                     SizedBox(height: 10),
                     AppTextfield(controller: addressController, hintText: ""),
-                    SizedBox(height: 20),
+                    SizedBox(height: 30),
                     Text(
-                      "City",
+                      "Country",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColor.subtext,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    AppTextfield(controller: cityController, hintText: ""),
+
                     SizedBox(height: 20),
+                    StateDropdownfield(
+                      value: selectedCountryKey,
+                      items: worldData.keys.map((entry) {
+                        return DropdownMenuItem(
+                          value: entry,
+                          child: Text(entry),
+                        );
+                      }).toList(),
+                      onchanged: (String? value) {
+                        setState(() {
+                          selectedCountryKey = value;
+                          selectedStateKey = worldData[value]!.keys.first;
+                          selectedCityKey =
+                              worldData[value]![selectedStateKey]!.keys.first;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 30),
                     Text(
                       "State",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -183,27 +309,35 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    StateDropdownfield(),
-                    SizedBox(height: 20),
+                    StateDropdownfield(
+                      value: selectedStateKey,
+                      items: worldData[selectedCountryKey]!.keys.map((entry) {
+                        return DropdownMenuItem(
+                          value: entry,
+                          child: Text(entry),
+                        );
+                      }).toList(),
+                      onchanged: (String? value) {
+                        setState(() {
+                          selectedStateKey = value;
+                          selectedCityKey =
+                              worldData[selectedCountryKey]![value]!.keys.first;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 30),
                     Text(
-                      "Country",
+                      "City",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColor.subtext,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     SizedBox(height: 10),
-                    AppTextfield(controller: countryController, hintText: ""),
-                    SizedBox(height: 20),
-                    CustomButton("Save", () {
-                      final username = nameController.text.trim();
-                      if (username.isNotEmpty) {
-                        Provider.of<ApplicationProvider>(
-                          context,
-                          listen: false,
-                        ).updateUserField("username", username);
-                      }
-                    }),
+
+                    _buildstatedropdownfield,
+                    SizedBox(height: 30),
+                    _buildsavebutton,
                   ],
                 ),
               );
@@ -213,4 +347,27 @@ class _DetailsScreenState extends State<DetailsScreen> {
       ),
     );
   }
+
+  Widget get _buildsavebutton => CustomButton("Save", () {
+    final username = nameController.text.trim();
+    if (username.isNotEmpty) {
+      Provider.of<ApplicationProvider>(
+        context,
+        listen: false,
+      ).updateUserField("username", username);
+    }
+  });
+  Widget get _buildstatedropdownfield => StateDropdownfield(
+    value: selectedCityKey,
+    items: worldData[selectedCountryKey]![selectedStateKey]!.entries.map((
+      entry,
+    ) {
+      return DropdownMenuItem(value: entry.key, child: Text(entry.value));
+    }).toList(),
+    onchanged: (String? value) {
+      setState(() {
+        selectedCityKey = value;
+      });
+    },
+  );
 }

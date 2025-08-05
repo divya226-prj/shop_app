@@ -16,7 +16,7 @@ class ForgotPassword extends StatelessWidget {
           margin: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
               _buildTxtForgotPassword(context),
               SizedBox(height: 30),
@@ -34,9 +34,7 @@ class ForgotPassword extends StatelessWidget {
   }
 
   Widget _buildTxtNewPassword(BuildContext context) => Row(
-    // mainAxisAlignment: MainAxisAlignment.end,
     children: [
-      // SizedBox(height: 20),
       RichText(
         text: TextSpan(
           children: [
@@ -59,13 +57,12 @@ class ForgotPassword extends StatelessWidget {
     ],
   );
 
-  Widget _buildSubmit(BuildContext context) =>
-      CustomButton("Submit", () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      });
+  Widget _buildSubmit(BuildContext context) => CustomButton("Submit", () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  });
 
   Widget _buildTxtForgotPassword(BuildContext context) => Text(
     "Forgot \npassword?",

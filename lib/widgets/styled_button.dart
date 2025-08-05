@@ -13,7 +13,6 @@ class CustomButton extends StatelessWidget {
         onPressed: onTap,
         child: Center(
           child: Text(
-            // textAlign: TextAlign.center,
             btntext,
             style: Theme.of(
               context,

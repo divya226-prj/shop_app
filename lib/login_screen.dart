@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 margin: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                   children: [
                     _buildTxtWelcomeBack(context),
                     SizedBox(height: 20),
