@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
-import 'package:shop_app/login_screen.dart';
+import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 

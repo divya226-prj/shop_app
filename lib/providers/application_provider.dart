@@ -11,11 +11,14 @@ class ApplicationProvider extends ChangeNotifier {
     return FirebaseFirestore.instance.collection("users").doc(uid).snapshots();
   }
 
-  Future<void> updateUserField(String fieldName, String value) async {
+  Future<void> updateUserField(String fieldName, dynamic value) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
     await FirebaseFirestore.instance.collection("users").doc(uid).update({
       fieldName: value,
     });
+    await FirebaseFirestore.instance.collection("users").doc(uid).set({
+      fieldName: value,
+    }, SetOptions(merge: true));
   }
 }

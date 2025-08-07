@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/get_started.dart';
+import 'package:shop_app/views/get_started/get_started.dart';
 
 class ToorScreen extends StatefulWidget {
   const ToorScreen({super.key});

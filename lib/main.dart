@@ -1,13 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/bottom_navbar.dart';
+import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_theme.dart';
-import 'package:shop_app/get_started.dart';
+import 'package:shop_app/views/get_started/get_started.dart';
 import 'package:shop_app/providers/application_provider.dart';
 import 'package:shop_app/providers/auth_provider.dart';
-import 'package:shop_app/splash_screen.dart';
-import 'package:shop_app/toor_screen.dart';
+import 'package:shop_app/views/get_started/toor_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

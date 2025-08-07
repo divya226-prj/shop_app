@@ -13,6 +13,24 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     user = _auth.currentUser;
   }
+  Future<void> userDetails(
+    dynamic firebaseUser, {
+    required String? email,
+  }) async {
+    final doc = await _firestore
+        .collection('users')
+        .doc(firebaseUser?.uid)
+        .get();
+    if (!doc.exists) {
+      await _firestore.collection('users').doc(firebaseUser?.uid).set({
+        'uid': firebaseUser?.uid,
+        'email': email,
+        'username': firebaseUser?.displayName ?? 'Guest',
+        'createdAt': DateTime.now(),
+      });
+    }
+  }
+
   Future<String?> signInWithFacebook() async {
     try {
       final LoginResult result = await _facebookAuth.login(
@@ -29,21 +47,13 @@ class AuthProvider extends ChangeNotifier {
         final User? firebaseUser = userCred.user;
         final facebookUserData = await _facebookAuth.getUserData();
 
-        final doc = await _firestore
-            .collection('users')
-            .doc(firebaseUser?.uid)
-            .get();
-        if (!doc.exists) {
-          await _firestore.collection('users').doc(firebaseUser?.uid).set({
-            'uid': firebaseUser?.uid,
-            'email':
-                facebookUserData["email"] ??
-                firebaseUser?.email ??
-                'Add your email',
-            'username': 'Guest',
-            'createdAt': DateTime.now(),
-          });
-        }
+        userDetails(
+          firebaseUser,
+          email:
+              facebookUserData["email"] ??
+              firebaseUser?.email ??
+              'Add your email',
+        );
         return "success";
       } else if (result.status == LoginStatus.cancelled) {
         return "Facebook login cancelled";
@@ -53,6 +63,8 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+
+    return null;
   }
 
   Future<String?> signInWithGoogle() async {
@@ -67,19 +79,7 @@ class AuthProvider extends ChangeNotifier {
       final userCred = await _auth.signInWithCredential(cred);
       final User? firebaseUser = userCred.user;
 
-      final doc = await _firestore
-          .collection('users')
-          .doc(firebaseUser?.uid)
-          .get();
-      if (!doc.exists) {
-        await _firestore.collection('users').doc(firebaseUser?.uid).set({
-          'uid': userCred.user?.uid,
-          'email': firebaseUser?.email ?? googleUser.email,
-          'username':
-              firebaseUser?.displayName ?? googleUser.displayName ?? 'Guest',
-          'createdAt': DateTime.now(),
-        });
-      }
+      userDetails(firebaseUser, email: firebaseUser?.email ?? googleUser.email);
       return null;
     } catch (e) {
       print(e.toString());
@@ -102,23 +102,15 @@ class AuthProvider extends ChangeNotifier {
 
   Future<String?> login(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
+      UserCredential userCred = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      user = result.user;
+      final User? firebaseUser = userCred.user;
+
       final doc = await _firestore.collection('users').doc(user?.uid).get();
-      if (!doc.exists) {
-        await _firestore.collection('users').doc(result.user?.uid).set({
-          'uid': result.user?.uid,
-          'email': result.user?.email ?? 'Add your email',
-          'username': 'Guest',
-          'createdAt': DateTime.now(),
-          'country': 'Select your country',
-          'state': 'Select your state',
-          'city': 'Select your city',
-        });
-      }
+
+      userDetails(firebaseUser, email: firebaseUser?.email ?? 'Add your email');
 
       return null;
     } on FirebaseAuthException catch (e) {

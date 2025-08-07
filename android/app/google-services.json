@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "167705651884-ibnegbt27qh4lpei07hn02mg7t2th2k4.apps.googleusercontent.com",
+          "client_id": "167705651884-07u3f55qju2u07hreiog76cr80r94tjj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.codexa.shop_app",
-            "certificate_hash": "e1bf4b972d3d1ba3f1f6f0d5eb05e9a0faaad45a"
+            "certificate_hash": "6aefda5c48ff0b367a5eff199a0313684aa270fb"
           }
         },
         {
@@ -37,6 +37,13 @@
             {
               "client_id": "167705651884-5gt1ckit7i5lhj4dtljhpa0o4asuor5i.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "167705651884-tpgs298p0j4ljo29dnbuinhiror1gk4l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codexa.shopapp"
+              }
             }
           ]
         }

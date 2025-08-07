@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/details_screen.dart';
-import 'package:shop_app/login_screen.dart';
+import 'package:shop_app/views/settings&detail/details_screen.dart';
+import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/providers/application_provider.dart';
 import 'package:shop_app/providers/auth_provider.dart';
 
@@ -45,10 +45,32 @@ class Settings extends StatelessWidget {
 
   Widget _buildlogoutbutton(BuildContext context) => InkWell(
     onTap: () {
-      Provider.of<AuthProvider>(context, listen: false).logout();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("LogOut"),
+            content: Text("Are you sure you want to log out?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Provider.of<AuthProvider>(context, listen: false).logout();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                child: Text("Ok"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Cancel"),
+              ),
+            ],
+          );
+        },
       );
     },
     child: Container(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
-import 'package:shop_app/home_page.dart';
-import 'package:shop_app/settings.dart';
+import 'package:shop_app/views/home/home_page.dart';
+import 'package:shop_app/views/settings&detail/settings.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});

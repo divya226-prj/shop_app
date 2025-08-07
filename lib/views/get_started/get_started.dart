@@ -3,7 +3,7 @@ import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
-import 'package:shop_app/signup_screen.dart';
+import 'package:shop_app/views/login&signup/signup_screen.dart';
 
 class GetStarted extends StatefulWidget {
   const GetStarted({super.key});

@@ -1,12 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/bottom_navbar.dart';
+import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/login_screen.dart';
+import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/providers/auth_provider.dart';
-import 'package:shop_app/social_logo.dart';
+import 'package:shop_app/views/login&signup/widget/social_logo.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 import 'package:shop_app/widgets/textfield_validaters.dart';
