@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
+import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/views/home/home_page.dart';
 import 'package:shop_app/views/settings&detail/settings.dart';
+import 'package:shop_app/widgets/hometextfield.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});
@@ -15,7 +17,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   static const List<Widget> _screens = [
     HomePage(),
-    Center(child: Text("Wishlist")),
+    Center(child: Text("Product")),
     Center(child: Text("Cart")),
     Center(child: Text("Search")),
     Settings(),
@@ -31,6 +33,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_selectedIndex],
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -41,7 +44,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border),
-            label: 'Wishlist',
+            label: 'Product',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart_outlined),

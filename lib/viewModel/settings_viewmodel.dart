@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 class SettingsViewmodel extends ChangeNotifier {
@@ -104,7 +102,7 @@ class SettingsViewmodel extends ChangeNotifier {
       },
     },
   };
-  File? _image;
+
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController pincodeController = TextEditingController();
@@ -116,4 +114,25 @@ class SettingsViewmodel extends ChangeNotifier {
   String? selectedCountryKey = 'India';
   String? selectedCityKey = 'A';
   String? selectedCity = "Ahmedabad";
+
+  void setCountryKey(String? value) {
+    selectedCountryKey = value;
+    selectedStateKey = worldData[value]!.keys.first;
+    selectedCityKey = worldData[value]![selectedStateKey]!.keys.first;
+    selectedCity = worldData[value]![selectedStateKey]![selectedCityKey];
+    notifyListeners();
+  }
+
+  void setStateKey(String? value) {
+    selectedStateKey = value;
+    selectedCityKey = worldData[selectedCountryKey]![value]!.keys.first;
+    selectedCity = worldData[selectedCountryKey]![value]![selectedCityKey];
+    notifyListeners();
+  }
+
+  void setCityKey(String? value) {
+    selectedCityKey = value;
+    selectedCity = worldData[selectedCountryKey]![selectedStateKey]![value];
+    notifyListeners();
+  }
 }

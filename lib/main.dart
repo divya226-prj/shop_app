@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/viewModel/settings_viewmodel.dart';
 import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_theme.dart';
 import 'package:shop_app/views/get_started/get_started.dart';
@@ -14,6 +15,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SettingsViewmodel()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ApplicationProvider()),
       ],

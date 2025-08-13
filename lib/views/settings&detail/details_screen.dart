@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/providers/application_provider.dart';
 import 'package:shop_app/viewModel/settings_viewmodel.dart';
+import 'package:shop_app/views/settings&detail/settings.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/state_dropdown.dart';
 import 'package:shop_app/widgets/styled_button.dart';
@@ -18,123 +17,12 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  final Map<String, Map<String, Map<String, String>>> worldData = {
-    'India': {
-      'Gujarat': {
-        'A': 'Ahmedabad ',
-        'S': 'Surat',
-        'R': 'Rajkot',
-        'v': 'Vadodra',
-      },
-      'Maharashtra': {
-        'A': 'Aurangabad',
-        'K': 'Kolhapur',
-        'S': 'Solapur',
-        'N': 'Nashik',
-      },
-      'Rajasthan': {
-        'P': 'Pushkar',
-        'U': 'Udaipur',
-        'A': 'Ajmer',
-        'B': 'Bikaner',
-      },
-      'Uttar Pradesh': {
-        'M': 'Meerut',
-        'A': 'Agra',
-        'P': 'Prayagraj',
-        'B': 'Bareilly',
-      },
-    },
-    'United Kingdom': {
-      'England': {
-        'l': 'London',
-        'm': 'Manchester',
-        'b': 'Birmingham',
-        'liverpool': 'Liverpool',
-      },
-      'Scotland': {
-        'e': 'Edinburgh',
-        'g': 'Glasgow',
-        'a': 'Aberdeen',
-        'd': 'Dundee',
-      },
-      'Wales': {'c': 'Cardiff', 's': 'Swansea', 'n': 'Newport', 'w': 'Wrexham'},
-      'Nothern Ireland': {
-        'b': 'Belfast',
-        'd': 'Derry',
-        'n': 'Newry',
-        'l': 'Lisburn',
-      },
-    },
-    'Canada': {
-      'Ontario': {
-        't': 'Toronto',
-        'o': 'Ottawa',
-        'k': 'Kitchener',
-        'h': 'Hamilton',
-      },
-      'Quebec': {
-        'm': 'Montreal',
-        'q': 'Quebec City',
-        'l': 'Laval',
-        'g': 'Gatineau',
-      },
-      'British Columbia': {
-        'v': 'Vancouver',
-        's': 'Surrey',
-        'b': 'Burnaby',
-        'r': 'Richmond',
-      },
-      'Alberta': {
-        'c': 'Calgary',
-        'e': 'Edmonton',
-        'l': 'Lethbridge',
-        's': 'St. Albert',
-      },
-    },
-    'United States': {
-      'California': {
-        'l': 'Los Angeles',
-        's': 'San Francisco',
-        's2': 'San Diego',
-        's3': 'Sacramento',
-      },
-      'Texas': {
-        'h': 'Houston',
-        'd': 'Dallas',
-        'a': 'Austin',
-        'f': 'Fort Worth',
-      },
-      'Florida': {
-        'm': 'Miami',
-        'o': 'Orlando',
-        't': 'Tampa',
-        'j': 'Jacksonville',
-      },
-      'New York': {
-        'n': 'New York City',
-        'b': 'Buffalo',
-        'r': 'Rochester',
-        's': 'Syracuse',
-      },
-    },
-  };
-  File? _image;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController pincodeController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  String? selectedStateKey = "Gujarat";
-  String? selectedCountryKey = 'India';
-  String? selectedCityKey = 'A';
-  String? selectedCity = "Ahmedabad";
-
   @override
   Widget build(BuildContext context) {
-    // final settingsViewmodel = Provider.of<SettingsViewmodel>(context);
+    final settingsViewmodel = Provider.of<SettingsViewmodel>(
+      context,
+      listen: true,
+    );
     final appProvider = Provider.of<ApplicationProvider>(
       context,
       listen: false,
@@ -156,16 +44,59 @@ class _DetailsScreenState extends State<DetailsScreen> {
               if (!doc.exists) {
                 return Text("No Data found");
               }
+
+              final data = doc.data() as Map<String, dynamic>? ?? {};
+
+              final country = data["country"] as String?;
+              final state = data["state"] as String?;
+              final city = data["city"] as String?;
+
+              if (country != null &&
+                  settingsViewmodel.worldData.containsKey(country) &&
+                  settingsViewmodel.selectedCountryKey == 'India') {
+                settingsViewmodel.selectedCountryKey = country;
+              }
+
+              if (state != null &&
+                  settingsViewmodel
+                      .worldData[settingsViewmodel.selectedCountryKey]!
+                      .containsKey(state) &&
+                  settingsViewmodel.selectedStateKey == 'Gujarat') {
+                settingsViewmodel.selectedStateKey = state;
+              }
+
+              if (city != null &&
+                  settingsViewmodel
+                      .worldData[settingsViewmodel
+                          .selectedCountryKey]![settingsViewmodel
+                          .selectedStateKey]!
+                      .containsValue(city) &&
+                  settingsViewmodel.selectedCityKey == 'A') {
+                settingsViewmodel.selectedCityKey = settingsViewmodel
+                    .worldData[settingsViewmodel
+                        .selectedCountryKey]![settingsViewmodel
+                        .selectedStateKey]!
+                    .entries
+                    .firstWhere((entry) => entry.value == city)
+                    .key;
+                settingsViewmodel.selectedCity = city;
+              }
+
               final email = doc.get("email") ?? "Add your email";
               final username = doc.get("username");
-              final address = doc.get("address") ?? "Empty";
-              final pincode = doc.get("pincode") ?? "Empty";
 
-              emailController.text = email;
-              nameController.text = username;
-              addressController.text = address;
-              pincodeController.text = pincode;
-              return _buildcontainer(context);
+              if (data.containsKey("address")) {
+                final address = data["address"];
+                settingsViewmodel.addressController.text = address;
+              }
+              if (data.containsKey("pincode")) {
+                final pincode = data["pincode"];
+                settingsViewmodel.pincodeController.text = pincode;
+              }
+
+              settingsViewmodel.emailController.text = email;
+              settingsViewmodel.nameController.text = username;
+              return _buildcontainer(context, settingsViewmodel);
             },
           ),
         ),
@@ -173,19 +104,30 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 
-  Widget get _buildsavebutton => CustomButton("Save", () {
-    final username = nameController.text.trim();
-    final address = addressController.text.trim();
-    final pincode = pincodeController.text.trim();
+  Widget _buildsavebutton(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => CustomButton("Save", () {
+    final username = settingsViewmodel.nameController.text.trim();
+    final address = settingsViewmodel.addressController.text.trim();
+    final pincode = settingsViewmodel.pincodeController.text.trim();
     final provider = Provider.of<ApplicationProvider>(context, listen: false);
     if (username.isNotEmpty) {
       provider.updateUserField("username", username);
     }
     provider.updateUserField("address", address);
     provider.updateUserField("pincode", pincode);
-    provider.updateUserField("country", selectedCountryKey);
-    provider.updateUserField("state", selectedStateKey);
-    provider.updateUserField("city", selectedCity);
+    provider.updateUserField("country", settingsViewmodel.selectedCountryKey);
+    provider.updateUserField("state", settingsViewmodel.selectedStateKey);
+    provider.updateUserField("city", settingsViewmodel.selectedCity);
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text("Changes saved succefully")));
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => Settings()),
+    );
   });
   Widget _buildtxtcity(BuildContext context) => Text(
     "City",
@@ -250,54 +192,77 @@ class _DetailsScreenState extends State<DetailsScreen> {
       color: AppColor.textPrimary,
     ),
   );
-  Widget get _buildstatedropdowncity => StateDropdownfield(
-    value: selectedCityKey,
-    items: worldData[selectedCountryKey]![selectedStateKey]!.entries.map((
-      entry,
-    ) {
-      return DropdownMenuItem(value: entry.key, child: Text(entry.value));
-    }).toList(),
-    onchanged: (String? value) {
-      setState(() {
-        selectedCityKey = value;
-        selectedCity =
-            worldData[selectedCountryKey]![selectedStateKey]![selectedCityKey];
-      });
+  Widget _buildstatedropdowncity(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => StateDropdownfield(
+    value: settingsViewmodel.selectedCityKey,
+    items: settingsViewmodel
+        .worldData[settingsViewmodel.selectedCountryKey]![settingsViewmodel
+            .selectedStateKey]!
+        .entries
+        .map((entry) {
+          return DropdownMenuItem(value: entry.key, child: Text(entry.value));
+        })
+        .toList(),
+    onchanged: (value) {
+      settingsViewmodel.setCityKey(value);
     },
   );
-  Widget get _buildstatedropdownstate => StateDropdownfield(
-    value: selectedStateKey,
-    items: worldData[selectedCountryKey]!.keys.map((entry) {
+  Widget _buildstatedropdownstate(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => StateDropdownfield(
+    value: settingsViewmodel.selectedStateKey,
+    items: settingsViewmodel
+        .worldData[settingsViewmodel.selectedCountryKey]!
+        .keys
+        .map((entry) {
+          return DropdownMenuItem(value: entry, child: Text(entry));
+        })
+        .toList(),
+    onchanged: (value) {
+      settingsViewmodel.setStateKey(value);
+    },
+  );
+  Widget _buildstatedropdowncountry(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => StateDropdownfield(
+    value: settingsViewmodel.selectedCountryKey,
+    items: settingsViewmodel.worldData.keys.map((entry) {
       return DropdownMenuItem(value: entry, child: Text(entry));
     }).toList(),
-    onchanged: (String? value) {
-      setState(() {
-        selectedStateKey = value;
-        selectedCityKey = worldData[selectedCountryKey]![value]!.keys.first;
-      });
+    onchanged: (value) {
+      settingsViewmodel.setCountryKey(value);
     },
   );
-  Widget get _buildstatedropdowncountry => StateDropdownfield(
-    value: selectedCountryKey,
-    items: worldData.keys.map((entry) {
-      return DropdownMenuItem(value: entry, child: Text(entry));
-    }).toList(),
-    onchanged: (String? value) {
-      setState(() {
-        selectedCountryKey = value;
-        selectedStateKey = worldData[value]!.keys.first;
-        selectedCityKey = worldData[value]![selectedStateKey]!.keys.first;
-      });
-    },
+  Widget _buildapptxtfieldaddresscontroller(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => AppTextfield(
+    controller: settingsViewmodel.addressController,
+    hintText: "",
   );
-  Widget get _buildapptxtfieldaddresscontroller =>
-      AppTextfield(controller: addressController, hintText: "");
-  Widget get _buildapptxtfieldpincodecontroller =>
-      AppTextfield(controller: pincodeController, hintText: "");
-  Widget get _buildapptxtfieldnamecontroller =>
-      AppTextfield(controller: nameController, hintText: "");
-  Widget get _buildapptxtfieldemailcontroller =>
-      AppTextfield(controller: emailController, hintText: "", enabled: false);
+  Widget _buildapptxtfieldpincodecontroller(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => AppTextfield(
+    controller: settingsViewmodel.pincodeController,
+    hintText: "",
+  );
+  Widget _buildapptxtfieldnamecontroller(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => AppTextfield(controller: settingsViewmodel.nameController, hintText: "");
+  Widget _buildapptxtfieldemailcontroller(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => AppTextfield(
+    controller: settingsViewmodel.emailController,
+    hintText: "",
+    enabled: false,
+  );
   Widget get _buildicon =>
       Icon(Icons.edit_outlined, color: AppColor.textonsecondary, size: 15);
   Widget get _buildpositioned => Positioned(
@@ -318,11 +283,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     height: 100,
     width: 100,
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
-    child: _image == null
-        ? Image.asset(AppImage.profile, fit: BoxFit.cover)
-        : Image.file(_image ?? File("")),
+    child: Image.asset(AppImage.profile, fit: BoxFit.cover),
   );
-  Widget _buildcontainer(BuildContext context) => Container(
+  Widget _buildcontainer(
+    BuildContext context,
+    SettingsViewmodel settingsViewmodel,
+  ) => Container(
     margin: EdgeInsets.all(20),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,11 +301,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
         SizedBox(height: 15),
         _buildtxtemailaddress(context),
         SizedBox(height: 10),
-        _buildapptxtfieldemailcontroller,
+        _buildapptxtfieldemailcontroller(context, settingsViewmodel),
         SizedBox(height: 15),
         _buildtxtusername(context),
         SizedBox(height: 10),
-        _buildapptxtfieldnamecontroller,
+        _buildapptxtfieldnamecontroller(context, settingsViewmodel),
 
         SizedBox(height: 30),
 
@@ -348,29 +314,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
         _buildtxtcountry(context),
 
         SizedBox(height: 20),
-        _buildstatedropdowncountry,
+        _buildstatedropdowncountry(context, settingsViewmodel),
 
         SizedBox(height: 30),
         _buildtxtstate(context),
 
         SizedBox(height: 10),
-        _buildstatedropdownstate,
+        _buildstatedropdownstate(context, settingsViewmodel),
 
         SizedBox(height: 30),
         _buildtxtcity(context),
 
         SizedBox(height: 10),
-        _buildstatedropdowncity,
+        _buildstatedropdowncity(context, settingsViewmodel),
         SizedBox(height: 30),
         _buildtxtaddress(context),
         SizedBox(height: 10),
-        _buildapptxtfieldaddresscontroller,
+        _buildapptxtfieldaddresscontroller(context, settingsViewmodel),
         SizedBox(height: 30),
         _buildtxtpincode(context),
         SizedBox(height: 10),
-        _buildapptxtfieldpincodecontroller,
+        _buildapptxtfieldpincodecontroller(context, settingsViewmodel),
         SizedBox(height: 30),
-        _buildsavebutton,
+        _buildsavebutton(context, settingsViewmodel),
       ],
     ),
   );
