@@ -12,8 +12,9 @@ class AppImage {
   static String facebook = "$imagepath/facebook_img.png";
   static String profile = "$imagepath/profile_img.png";
   static String applogo = "$imagepath/applogo_img.png";
-  static String blackwinter = "$imagepath/blackWinter_img.png";
-  static String flaredress = "$imagepath/flareDress_img.png";
-  static String jordan = "$imagepath/jordan_img.png";
-  static String sonyps4 = "$imagepath/sonyps4_img.png";
+  static String blackwinter = "$imagepath/blackwinter_img.png";
+  static String mensstarry = "$imagepath/mensstarry_img.png";
+  static String blackdress = "$imagepath/blackdress_img.png";
+  static String denimdress = "$imagepath/denimdress_img.png";
+  static String rating = "$imagepath/rating_img.png";
 }

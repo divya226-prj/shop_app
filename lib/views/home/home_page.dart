@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/widgets/hometextfield.dart';
 
