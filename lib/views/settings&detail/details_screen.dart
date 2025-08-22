@@ -10,7 +10,7 @@ import 'package:shop_app/widgets/state_dropdown.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
+  DetailsScreen({super.key});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();

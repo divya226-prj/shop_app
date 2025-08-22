@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
-import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/widgets/hometextfield.dart';
@@ -35,13 +34,19 @@ class _ProductScreenState extends State<ProductScreen> {
               if (state is ProductLoaded) {
                 lstProduct = state.products;
               }
+
+              if (state is SearchLoaded) {
+                lstProduct = state.products;
+              }
             },
 
             builder: (context, state) {
               return BlocBuilder<ProductBloc, ProductState>(
                 builder: (context, state) {
                   if (state is ProductLoading) {
-                    return CircularProgressIndicator();
+                    return Expanded(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
                   }
                   return _buildgridviewbuilder(context);
                 },
@@ -53,8 +58,17 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
-  Widget get _buildcolumnhometxtfield =>
-      Column(children: [SizedBox(height: 20), Hometextfield()]);
+  Widget get _buildcolumnhometxtfield => Column(
+    children: [
+      SizedBox(height: 20),
+      Hometextfield(
+        controller: SearchController(),
+        onchanged: (value) {
+          BlocProvider.of<ProductBloc>(context).add(SearchQueryChanged(value));
+        },
+      ),
+    ],
+  );
 
   Widget get _buildcircleavatar =>
       CircleAvatar(backgroundImage: AssetImage(AppImage.profile), radius: 16);
@@ -83,60 +97,90 @@ class _ProductScreenState extends State<ProductScreen> {
   );
 
   Widget _buildgridviewbuilder(BuildContext context) => Expanded(
-    child: GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        // crossAxisSpacing: 15,
-        // mainAxisExtent: 15,
-        childAspectRatio: 0.7,
-      ),
+    child: Container(
+      margin: EdgeInsets.all(9.0),
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.5,
+        ),
 
-      itemCount: lstProduct.length,
-      itemBuilder: (context, index) {
-        return Card(
-          elevation: 10,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  lstProduct[index].image,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+        itemCount: lstProduct.length,
+        itemBuilder: (context, index) {
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      lstProduct[index].images?.first ?? "",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          textAlign: TextAlign.start,
+                          lstProduct[index].title ?? "",
+                          style: TextTheme.of(context).titleLarge?.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black87,
+                            letterSpacing: 0.5,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 8),
+
+                        Wrap(
+                          children: [
+                            Text(
+                              lstProduct[index].description ?? "",
+                              style: TextTheme.of(context).titleLarge?.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.black54,
+                                letterSpacing: 0.5,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          "Rs ${lstProduct[index].price}",
+                          style: TextTheme.of(context).titleLarge?.copyWith(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black54,
+                          ),
+                        ),
+
+                        Image.asset(AppImage.rating, height: 30, width: 90),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  lstProduct[index].name,
-                  style: TextStyle(color: AppColor.textPrimary, fontSize: 16),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Text(
-                lstProduct[index].description,
-                style: TextStyle(color: AppColor.textPrimary, fontSize: 10),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                "${lstProduct[index].id}",
-                style: TextStyle(color: AppColor.textPrimary, fontSize: 12),
-              ),
-              Text(
-                "${lstProduct[index].price}",
-                style: TextStyle(color: AppColor.textPrimary, fontSize: 10),
-              ),
-              Image.asset(AppImage.rating, height: 30, width: 90),
-            ],
-          ),
-        );
-      },
+            ),
+          );
+        },
+      ),
     ),
   );
 }

@@ -10,6 +10,7 @@ class AppTextfield extends StatefulWidget {
   final bool? enabled;
   const AppTextfield({
     super.key,
+
     required this.controller,
     required this.hintText,
     this.prefixIcon,

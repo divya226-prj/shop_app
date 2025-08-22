@@ -12,7 +12,11 @@ final class ProductLoaded extends ProductState {
 
 final class ProductInitial extends ProductState {}
 
-class RatingState {
-  final double rating;
-  RatingState(this.rating);
+final class SearchLoading extends ProductState {}
+
+final class SearchLoaded extends ProductState {
+  final List<Product> products;
+  SearchLoaded(this.products);
 }
+
+final class SearchInitial extends ProductState {}

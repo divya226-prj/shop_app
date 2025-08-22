@@ -1,15 +1,100 @@
+import 'dart:ffi';
+
 class Product {
-  final String name;
-  int id;
-  double price;
-  String description;
-  String image;
+  int? id;
+  String? title;
+  String? slug;
+  int? price;
+  String? description;
+  Category? category;
+  List<String>? images;
+  String? creationAt;
+  String? updatedAt;
 
   Product({
-    required this.name,
-    required this.id,
-    required this.price,
-    required this.description,
-    required this.image,
+    this.id,
+    this.title,
+    this.slug,
+    this.price,
+    this.description,
+    this.category,
+    this.images,
+    this.creationAt,
+    this.updatedAt,
   });
+
+  Product.fromJson(Map<String, dynamic> json) {
+    try {
+      id = json['id'] as int;
+      title = json['title'];
+      slug = json['slug'];
+
+      price = json['price'] as int;
+      description = json['description'];
+      category = json['category'] != null
+          ? new Category.fromJson(json['category'])
+          : null;
+      images = json['images'].cast<String>();
+      creationAt = json['creationAt'];
+      updatedAt = json['updatedAt'];
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['slug'] = this.slug;
+    data['price'] = this.price;
+    data['description'] = this.description;
+    if (this.category != null) {
+      data['category'] = this.category!.toJson();
+    }
+    data['images'] = this.images;
+    data['creationAt'] = this.creationAt;
+    data['updatedAt'] = this.updatedAt;
+    return data;
+  }
+
+  static where(bool Function(dynamic Product) param0) {}
+}
+
+class Category {
+  int? id;
+  String? name;
+  String? slug;
+  String? image;
+  String? creationAt;
+  String? updatedAt;
+
+  Category({
+    this.id,
+    this.name,
+    this.slug,
+    this.image,
+    this.creationAt,
+    this.updatedAt,
+  });
+
+  Category.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    slug = json['slug'];
+    image = json['image'];
+    creationAt = json['creationAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['slug'] = this.slug;
+    data['image'] = this.image;
+    data['creationAt'] = this.creationAt;
+    data['updatedAt'] = this.updatedAt;
+    return data;
+  }
 }

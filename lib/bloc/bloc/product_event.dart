@@ -10,7 +10,7 @@ class AddProductToCart extends ProductEvent {
   AddProductToCart(this.product);
 }
 
-class RatingUpdatedEvent extends ProductEvent {
-  final double rating;
-  RatingUpdatedEvent(this.rating);
+class SearchQueryChanged extends ProductEvent {
+  final String query;
+  SearchQueryChanged(this.query);
 }

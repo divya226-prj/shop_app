@@ -4,15 +4,20 @@ import 'package:shop_app/constants/app_image.dart';
 import 'package:shop_app/widgets/hometextfield.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+  final TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: _buildappbar, body: _buildcolumnhometxtfield);
   }
 
-  Widget get _buildcolumnhometxtfield =>
-      Column(children: [SizedBox(height: 20), Hometextfield()]);
+  Widget get _buildcolumnhometxtfield => Column(
+    children: [
+      SizedBox(height: 20),
+      Hometextfield(controller: searchController, onchanged: (value) {}),
+    ],
+  );
   Widget get _buildcircleavatar =>
       CircleAvatar(backgroundImage: AssetImage(AppImage.profile), radius: 16);
   Widget get _builappbaricon => Row(

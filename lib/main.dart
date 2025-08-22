@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/viewModel/settings_viewmodel.dart';
+import 'package:shop_app/views/home/home_page.dart';
 import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_theme.dart';
 import 'package:shop_app/providers/application_provider.dart';
@@ -31,8 +32,17 @@ class MyApp extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      home: authProvider.user != null ? CustomBottomNavBar() : ToorScreen(),
+      title: 'Shop app',
+      initialRoute: '/',
+      routes: {
+        '/': (context) =>
+            authProvider.user != null ? CustomBottomNavBar() : ToorScreen(),
+        '/ToorScreen': (context) => ToorScreen(),
+        '/CustomBottomNavBar': (context) => CustomBottomNavBar(),
+        
+      },
+
+      // home: authProvider.user != null ? CustomBottomNavBar() : ToorScreen(),
       theme: AppTheme.lightTheme,
     );
   }

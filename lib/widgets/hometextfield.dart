@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 
 class Hometextfield extends StatelessWidget {
-  Hometextfield({super.key});
-  final TextEditingController searchController = TextEditingController();
+  final TextEditingController? controller;
+  final void Function(String)? onchanged;
+
+  Hometextfield({super.key, required this.controller, required this.onchanged});
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +17,14 @@ class Hometextfield extends StatelessWidget {
         color: const Color.fromARGB(205, 243, 241, 241),
       ),
       child: TextField(
-        controller: SearchController(),
+        controller: controller,
         keyboardType: TextInputType.text,
+        onChanged: onchanged,
+        style: TextTheme.of(context).bodySmall?.copyWith(
+          color: AppColor.textSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
         decoration: InputDecoration(
           prefixIcon: Icon(
             Icons.search,
