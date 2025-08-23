@@ -108,7 +108,7 @@ class AuthProvider extends ChangeNotifier {
       );
       final User? firebaseUser = userCred.user;
 
-      final doc = await _firestore.collection('users').doc(user?.uid).get();
+      // final doc = await _firestore.collection('users').doc(user?.uid).get();
 
       userDetails(firebaseUser, email: firebaseUser?.email ?? 'Add your email');
 

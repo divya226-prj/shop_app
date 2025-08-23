@@ -1,10 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/widgets/bottom_navbar.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/providers/auth_provider.dart';
 import 'package:shop_app/views/login&signup/widget/social_logo.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
@@ -43,7 +42,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   margin: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                     children: [
                       SizedBox(height: 30),
                       _buildTxtCreateAccount(context),
@@ -141,10 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Login successfully")));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
-          );
+          Navigator.pushNamed(context, AppRoutes.customBottmNavBar);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Not able to signin with google")),
@@ -167,10 +163,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Login successful")));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
-          );
+          Navigator.pushNamed(context, AppRoutes.customBottmNavBar);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(result ?? "Facebook login failed")),
@@ -207,10 +200,7 @@ class _SignupScreenState extends State<SignupScreen> {
       String? result = await authProvider.signup(email, password);
 
       if (result == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => LoginScreen()),
-        );
+        Navigator.pushNamed(context, AppRoutes.loginScreen);
       } else {
         ScaffoldMessenger.of(
           context,
@@ -230,10 +220,7 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-            );
+            Navigator.pushNamed(context, AppRoutes.loginScreen);
           },
           child: Text(
             "Login",

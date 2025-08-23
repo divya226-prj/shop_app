@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
 import 'package:shop_app/views/login&signup/signup_screen.dart';
@@ -62,10 +63,7 @@ class _GetStartedState extends State<GetStarted> {
           _buildbodytext,
           SizedBox(height: 30),
           CustomButton("Get Started", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignupScreen()),
-            );
+            Navigator.pushNamed(context, AppRoutes.signUpScreen);
           }),
         ],
       ),

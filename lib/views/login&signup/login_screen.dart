@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/widgets/bottom_navbar.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/views/login&signup/forgot_password.dart';
 import 'package:shop_app/providers/auth_provider.dart';
-import 'package:shop_app/views/login&signup/signup_screen.dart';
 import 'package:shop_app/views/login&signup/widget/social_logo.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
@@ -87,10 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
     children: [
       TextButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ForgotPassword()),
-          );
+          Navigator.pushNamed(context, AppRoutes.forgotPasswordScreen);
         },
         child: Text(
           "Forgot Password?",
@@ -121,10 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Login successfully")));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
-          );
+          Navigator.pushNamed(context, AppRoutes.customBottmNavBar);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Not able to signin with google")),
@@ -147,10 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Login successful")));
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
-          );
+          Navigator.pushNamed(context, AppRoutes.customBottmNavBar);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(result ?? "Facebook login failed")),
@@ -169,10 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (result == null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => CustomBottomNavBar()),
-      );
+      Navigator.pushNamed(context, AppRoutes.customBottmNavBar);
     } else {
       ScaffoldMessenger.of(
         context,
@@ -191,10 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SignupScreen()),
-            );
+            Navigator.pushNamed(context, AppRoutes.signUpScreen);
           },
           child: Text(
             "Sign Up",

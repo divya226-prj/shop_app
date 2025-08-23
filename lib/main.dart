@@ -1,8 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/viewModel/settings_viewmodel.dart';
 import 'package:shop_app/views/home/home_page.dart';
+import 'package:shop_app/views/home/product_screen.dart';
+import 'package:shop_app/views/login&signup/forgot_password.dart';
+import 'package:shop_app/views/login&signup/login_screen.dart';
+import 'package:shop_app/views/login&signup/signup_screen.dart';
 import 'package:shop_app/widgets/bottom_navbar.dart';
 import 'package:shop_app/constants/app_theme.dart';
 import 'package:shop_app/providers/application_provider.dart';
@@ -29,20 +34,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Shop app',
-      initialRoute: '/',
-      routes: {
-        '/': (context) =>
-            authProvider.user != null ? CustomBottomNavBar() : ToorScreen(),
-        '/ToorScreen': (context) => ToorScreen(),
-        '/CustomBottomNavBar': (context) => CustomBottomNavBar(),
-        
-      },
+      onGenerateRoute: AppRoutes.generateRoute,
+      initialRoute: AppRoutes.first,
 
-      // home: authProvider.user != null ? CustomBottomNavBar() : ToorScreen(),
       theme: AppTheme.lightTheme,
     );
   }

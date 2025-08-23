@@ -124,6 +124,11 @@ class _ProductScreenState extends State<ProductScreen> {
                     child: Image.network(
                       lstProduct[index].images?.first ?? "",
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network(
+                          "https://skala.or.id/wp-content/uploads/2024/01/dummy-post-square-1-1.jpg",
+                        );
+                      },
                     ),
                   ),
                   SizedBox(height: 10),

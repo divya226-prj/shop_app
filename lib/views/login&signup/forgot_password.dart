@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/constants/app_color.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/widgets/app_textfield.dart';
 import 'package:shop_app/widgets/styled_button.dart';
@@ -58,10 +59,7 @@ class ForgotPassword extends StatelessWidget {
   );
 
   Widget _buildSubmit(BuildContext context) => CustomButton("Submit", () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    Navigator.pushNamed(context, AppRoutes.loginScreen);
   });
 
   Widget _buildTxtForgotPassword(BuildContext context) => Text(

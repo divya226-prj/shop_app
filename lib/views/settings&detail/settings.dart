@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
+import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/views/settings&detail/details_screen.dart';
-import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/providers/application_provider.dart';
 import 'package:shop_app/providers/auth_provider.dart';
 
@@ -24,7 +24,19 @@ class Settings extends StatelessWidget {
             final doc = snapshot.data!;
             if (!doc.exists || doc.data() == null) {
               return Column(
-                children: [const Center(child: Text("No user data found"))],
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Provider.of<AuthProvider>(
+                        context,
+                        listen: false,
+                      ).logout();
+                      Navigator.pushNamed(context, AppRoutes.loginScreen);
+                    },
+                    child: Text("Log Out"),
+                  ),
+                  Center(child: Text("No user data found")),
+                ],
               );
             }
 
@@ -55,10 +67,7 @@ class Settings extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Provider.of<AuthProvider>(context, listen: false).logout();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
+                  Navigator.pushNamed(context, AppRoutes.loginScreen);
                 },
                 child: Text("Ok"),
               ),
