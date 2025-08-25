@@ -10,4 +10,5 @@ class AppColor {
   static const tertiary = Color(0xFF626262);
   static const texttertiary = Color(0xFF4392F9);
   static const textontertiary = Color(0xFFBBBBBB);
+  static const textsubtext = Color(0xFF828282);
 }

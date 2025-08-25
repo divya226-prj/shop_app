@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/providers/auth_provider.dart';
 import 'package:shop_app/views/get_started/toor_screen.dart';
-import 'package:shop_app/views/home/cart_screen.dart';
+import 'package:shop_app/views/home/productdetail_screen.dart';
 import 'package:shop_app/views/home/home_page.dart';
-import 'package:shop_app/views/home/product_screen.dart';
+import 'package:shop_app/views/home/search_screen.dart';
 import 'package:shop_app/views/login&signup/forgot_password.dart';
 import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/views/login&signup/signup_screen.dart';
@@ -17,6 +18,7 @@ class AppRoutes {
   static const String signUpScreen = "/SignUpScreen";
   static const String loginScreen = "/LoginScreen";
   static const String forgotPasswordScreen = "/ForgotPasswordScreen";
+  static const String productDetailScreen = "/ProductDetailScreen";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -39,6 +41,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case forgotPasswordScreen:
         return MaterialPageRoute(builder: (_) => ForgotPassword());
+      case productDetailScreen:
+        final args = settings.arguments as Product;
+        return MaterialPageRoute(
+          builder: (_) => ProductdetailScreen(selectedProduct: args),
+        );
 
       default:
         return MaterialPageRoute(

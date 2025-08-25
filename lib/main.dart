@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/viewModel/settings_viewmodel.dart';
 import 'package:shop_app/views/home/home_page.dart';
-import 'package:shop_app/views/home/product_screen.dart';
+import 'package:shop_app/views/home/search_screen.dart';
 import 'package:shop_app/views/login&signup/forgot_password.dart';
 import 'package:shop_app/views/login&signup/login_screen.dart';
 import 'package:shop_app/views/login&signup/signup_screen.dart';

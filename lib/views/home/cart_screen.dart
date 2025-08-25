@@ -5,16 +5,6 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios_new_sharp),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.shopping_cart_outlined),
-          ),
-        ],
-      ),
-    );
+    return const Placeholder();
   }
 }
