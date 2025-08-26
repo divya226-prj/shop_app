@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
@@ -16,6 +17,8 @@ class SearchScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<SearchScreen> {
   List<Product> lstProduct = [];
+  Set<int> wishlistedProducts = {};
+
   @override
   void initState() {
     super.initState();
@@ -144,11 +147,32 @@ class _ProductScreenState extends State<SearchScreen> {
                               );
                             },
                           ),
+
                           Positioned(
                             width: 350,
-                            child: Icon(
-                              Icons.favorite_border_outlined,
-                              color: AppColor.primary,
+                            height: 20,
+                            child: IconButton(
+                              color: AppColor.textPrimary,
+                              onPressed: () {
+                                setState(() {
+                                  final productId =
+                                      lstProduct[index].id ?? index;
+                                  if (wishlistedProducts.contains(productId)) {
+                                    wishlistedProducts.remove(productId);
+                                  } else {
+                                    wishlistedProducts.add(productId);
+                                  }
+                                });
+                              },
+                              icon:
+                                  wishlistedProducts.contains(
+                                    lstProduct[index].id ?? index,
+                                  )
+                                  ? Icon(
+                                      CupertinoIcons.heart_fill,
+                                      color: AppColor.primary,
+                                    )
+                                  : Icon(CupertinoIcons.heart),
                             ),
                           ),
                         ],
