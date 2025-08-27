@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
+import 'package:shop_app/database/wishlist_database.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/widgets/hometextfield.dart';

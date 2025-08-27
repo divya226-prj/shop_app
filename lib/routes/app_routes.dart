@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/providers/auth_provider.dart';
+import 'package:shop_app/repository/apprepository.dart';
 import 'package:shop_app/views/get_started/toor_screen.dart';
 import 'package:shop_app/views/home/productdetail_screen.dart';
 import 'package:shop_app/views/home/home_page.dart';

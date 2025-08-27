@@ -1,25 +1,30 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
+import 'package:shop_app/database/wishlist_database.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
 class ProductdetailScreen extends StatefulWidget {
   final Product selectedProduct;
 
-  ProductdetailScreen({super.key, required this.selectedProduct});
+  const ProductdetailScreen({super.key, required this.selectedProduct});
 
   @override
   State<ProductdetailScreen> createState() => _ProductdetailScreenState();
 }
 
 class _ProductdetailScreenState extends State<ProductdetailScreen> {
+  final shopAppDatabase = ShopAppDatabase.instance;
   final CarouselSliderController _carousel = CarouselSliderController();
   int currentIndex = 0;
   bool iswishlisted = false;
   bool isExpanded = false;
+  List<Product> product = [];
 
   @override
   Widget build(BuildContext context) {
@@ -223,9 +228,27 @@ class _ProductdetailScreenState extends State<ProductdetailScreen> {
           ],
         ),
       ),
+
       bottomNavigationBar: SafeArea(
         minimum: EdgeInsets.all(15),
-        child: SizedBox(height: 65, child: CustomButton("Add to Cart", () {})),
+        child: SizedBox(
+          height: 65,
+          child: CustomButton("Add to Cart", () {
+            try {
+              BlocProvider.of<ProductBloc>(
+                context,
+              ).add(AddProductToCart(widget.selectedProduct));
+
+              // ScaffoldMessenger.of(
+              //   context,
+              // ).showSnackBar(SnackBar(content: Text("Added to cart")));
+            } catch (e) {
+              // ScaffoldMessenger.of(context).showSnackBar(
+              //   SnackBar(content: Text("Cart feature not initialized")),
+              // );
+            }
+          }),
+        ),
       ),
     );
   }

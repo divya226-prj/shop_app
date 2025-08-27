@@ -20,13 +20,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
 
   static final List<Widget> _screens = [
     HomePage(),
-    RepositoryProvider(
-      create: (context) => Apprepository(),
-      child: BlocProvider(
-        create: (context) => ProductBloc(context.read<Apprepository>()),
-        child: SearchScreen(),
-      ),
-    ),
+    SearchScreen(),
+    // BlocProvider(
+    //   create: (context) => ProductBloc(context.read<Apprepository>()),
+    //   child: SearchScreen(),
+    // ),
     // BlocProvider(
     //   create: (context) => ProductBloc(context.read<Apprepository>()),
     //   child: CartScreen(),

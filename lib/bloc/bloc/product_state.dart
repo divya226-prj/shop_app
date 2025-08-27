@@ -20,3 +20,15 @@ final class SearchLoaded extends ProductState {
 }
 
 final class SearchInitial extends ProductState {}
+
+final class CartLoaded extends ProductState {
+  final List<Product> products;
+  CartLoaded(this.products);
+}
+
+class CartError extends ProductState {
+  final String message;
+  CartError(this.message);
+}
+
+final class CartLoading extends ProductState {}

@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:convert';
 
 class Product {
   int? id;
@@ -10,6 +10,7 @@ class Product {
   List<String>? images;
   String? creationAt;
   String? updatedAt;
+  bool? isFavorite;
 
   Product({
     this.id,
@@ -21,7 +22,31 @@ class Product {
     this.images,
     this.creationAt,
     this.updatedAt,
+    this.isFavorite,
   });
+  Product copy({
+    int? id,
+    String? title,
+    String? slug,
+    int? price,
+    String? description,
+    Category? category,
+    List<String>? images,
+    String? creationAt,
+    String? updatedAt,
+    bool? isFavorite,
+  }) => Product(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    slug: slug ?? this.slug,
+    price: price ?? this.price,
+    description: description ?? this.description,
+    category: category ?? this.category,
+    images: images ?? this.images,
+    creationAt: creationAt ?? this.creationAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isFavorite: isFavorite ?? this.isFavorite,
+  );
 
   Product.fromJson(Map<String, dynamic> json) {
     try {
@@ -49,13 +74,48 @@ class Product {
     data['slug'] = this.slug;
     data['price'] = this.price;
     data['description'] = this.description;
-    if (this.category != null) {
-      data['category'] = this.category!.toJson();
-    }
-    data['images'] = this.images;
+    'category';
+    category != null ? jsonEncode(category!.toJson()) : null;
+    'images';
+    images != null ? jsonEncode(images) : null;
     data['creationAt'] = this.creationAt;
     data['updatedAt'] = this.updatedAt;
+    'isFavorite';
+    isFavorite == true ? 1 : 0;
     return data;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'slug': slug,
+      'price': price,
+      'description': description,
+
+      'category_id': category?.id,
+      'category_name': category?.name,
+
+      'images': images != null ? images!.join(',') : null,
+      'creationAt': creationAt,
+      'updatedAt': updatedAt,
+      'isFavorite': isFavorite == true ? 1 : 0,
+    };
+  }
+
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'],
+      title: map['title'],
+      slug: map['slug'],
+      price: map['price'],
+      description: map['description'],
+      category: Category(id: map['category_id'], name: map['category_name']),
+      images: map['images'] != null ? map['images'].split(',') : [],
+      creationAt: map['creationAt'],
+      updatedAt: map['updatedAt'],
+      isFavorite: map['isFavorite'] == 1,
+    );
   }
 
   static where(bool Function(dynamic Product) param0) {}
