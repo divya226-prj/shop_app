@@ -31,4 +31,12 @@ class CartError extends ProductState {
   CartError(this.message);
 }
 
+class WishlistLoaded extends ProductState {
+  final List<Product> products;
+
+  WishlistLoaded({required this.products});
+}
+
+class WishlistLoading extends ProductState {}
+
 final class CartLoading extends ProductState {}

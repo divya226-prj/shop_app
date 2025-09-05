@@ -2,10 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/bloc/bloc/bloc/bloc/wishlist_bloc.dart';
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/database/wishlist_database.dart';
+import 'package:shop_app/database/cart_database.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
@@ -24,7 +25,6 @@ class _ProductdetailScreenState extends State<ProductdetailScreen> {
   int currentIndex = 0;
   bool iswishlisted = false;
   bool isExpanded = false;
-  List<Product> product = [];
 
   @override
   Widget build(BuildContext context) {
@@ -152,15 +152,27 @@ class _ProductdetailScreenState extends State<ProductdetailScreen> {
                           color: AppColor.primary,
                           onPressed: () {
                             setState(() {
-                              iswishlisted = !iswishlisted;
+                              widget.selectedProduct.isFavorite =
+                                  !(widget.selectedProduct.isFavorite ?? false);
+                              if (widget.selectedProduct.isFavorite ?? false) {
+                                BlocProvider.of<ProductBloc>(context).add(
+                                  AddProductToWishlist(widget.selectedProduct),
+                                );
+                              } else {
+                                BlocProvider.of<WishlistBloc>(context).add(
+                                  DeleteProducts(
+                                    widget.selectedProduct.id ?? 0,
+                                  ),
+                                );
+                              }
                             });
                           },
-                          icon: iswishlisted
-                              ? Icon(CupertinoIcons.heart_fill)
-                              : Icon(
-                                  CupertinoIcons.heart,
-                                  color: AppColor.textPrimary,
-                                ),
+                          icon: widget.selectedProduct.isFavorite == true
+                              ? Icon(
+                                  CupertinoIcons.heart_fill,
+                                  color: AppColor.primary,
+                                )
+                              : Icon(CupertinoIcons.heart),
                         ),
                       ],
                     ),
@@ -234,19 +246,15 @@ class _ProductdetailScreenState extends State<ProductdetailScreen> {
         child: SizedBox(
           height: 65,
           child: CustomButton("Add to Cart", () {
-            try {
-              BlocProvider.of<ProductBloc>(
-                context,
-              ).add(AddProductToCart(widget.selectedProduct));
+            context.read<ProductBloc>().add(
+              AddProductToCart(widget.selectedProduct),
+            );
 
-              // ScaffoldMessenger.of(
-              //   context,
-              // ).showSnackBar(SnackBar(content: Text("Added to cart")));
-            } catch (e) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   SnackBar(content: Text("Cart feature not initialized")),
-              // );
-            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${widget.selectedProduct.title} added to cart'),
+              ),
+            );
           }),
         ),
       ),

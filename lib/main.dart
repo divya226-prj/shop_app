@@ -2,6 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/Filter/bloc/category_bloc.dart';
+import 'package:shop_app/bloc/bloc/bloc/bloc/wishlist_bloc.dart';
+import 'package:shop_app/bloc/bloc/bloc/cart_bloc.dart';
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/repository/apprepository.dart';
 import 'package:shop_app/routes/app_routes.dart';
@@ -23,6 +26,15 @@ void main() async {
           ChangeNotifierProvider(create: (_) => ApplicationProvider()),
           BlocProvider(
             create: (context) => ProductBloc(context.read<Apprepository>()),
+          ),
+          BlocProvider(
+            create: (context) => CartBloc(context.read<Apprepository>()),
+          ),
+          BlocProvider(
+            create: (context) => WishlistBloc(context.read<Apprepository>()),
+          ),
+          BlocProvider(
+            create: (context) => CategoryBloc(context.read<Apprepository>()),
           ),
         ],
         child: MyApp(),

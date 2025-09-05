@@ -1,16 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shop_app/bloc/bloc/bloc/bloc/wishlist_bloc.dart' as wishlist;
 import 'package:shop_app/bloc/bloc/product_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
 import 'package:shop_app/constants/app_image.dart';
-import 'package:shop_app/database/wishlist_database.dart';
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/routes/app_routes.dart';
 import 'package:shop_app/widgets/hometextfield.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  final int? selectedId;
+
+  SearchScreen({super.key, this.selectedId});
 
   @override
   State<SearchScreen> createState() => _ProductScreenState();
@@ -18,7 +20,7 @@ class SearchScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<SearchScreen> {
   List<Product> lstProduct = [];
-  Set<int> wishlistedProducts = {};
+  bool iswishlisted = false;
 
   @override
   void initState() {
@@ -29,7 +31,9 @@ class _ProductScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(145, 249, 249, 249),
       appBar: _buildappbar,
+
       body: Column(
         children: [
           _buildcolumnhometxtfield,
@@ -37,8 +41,19 @@ class _ProductScreenState extends State<SearchScreen> {
 
           BlocConsumer<ProductBloc, ProductState>(
             listener: (context, state) {
+              // if (state is ProductLoaded) {
+              //   lstProduct = state.products;
+              // }
               if (state is ProductLoaded) {
-                lstProduct = state.products;
+                if (widget.selectedId != null) {
+                  lstProduct = state.products
+                      .where(
+                        (product) => widget.selectedId == product.category?.id,
+                      )
+                      .toList();
+                } else {
+                  lstProduct = state.products;
+                }
               }
 
               if (state is SearchLoaded) {
@@ -73,6 +88,86 @@ class _ProductScreenState extends State<SearchScreen> {
           BlocProvider.of<ProductBloc>(context).add(SearchQueryChanged(value));
         },
       ),
+      // SizedBox(height: 20),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Text(
+              '${lstProduct.length}+ Items',
+              style: TextTheme.of(context).titleLarge?.copyWith(
+                color: AppColor.textPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+
+          // SizedBox(height: 20),
+          Spacer(),
+          Card(
+            child: Container(
+              height: 30,
+              width: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: AppColor.textonsecondary,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Sort",
+                    style: TextTheme.of(context).titleLarge?.copyWith(
+                      color: Colors.black54,
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                  Icon(Icons.sort),
+                ],
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              Navigator.pushNamed(context, AppRoutes.filterScreen);
+            },
+            child: Card(
+              child: Container(
+                height: 30,
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: AppColor.textonsecondary,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Filter",
+                      style: TextTheme.of(context).titleLarge?.copyWith(
+                        color: Colors.black54,
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    Icon(Icons.filter_alt_outlined),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      // Container(
+      //   margin: EdgeInsets.only(left: 10),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.start,
+      //     children: [Text('${lstProduct.length}')],
+      //   ),
+      // ),
     ],
   );
 
@@ -156,19 +251,24 @@ class _ProductScreenState extends State<SearchScreen> {
                               color: AppColor.textPrimary,
                               onPressed: () {
                                 setState(() {
-                                  final productId =
-                                      lstProduct[index].id ?? index;
-                                  if (wishlistedProducts.contains(productId)) {
-                                    wishlistedProducts.remove(productId);
+                                  lstProduct[index].isFavorite =
+                                      !(lstProduct[index].isFavorite ?? false);
+                                  if (lstProduct[index].isFavorite ?? false) {
+                                    BlocProvider.of<ProductBloc>(context).add(
+                                      AddProductToWishlist(lstProduct[index]),
+                                    );
                                   } else {
-                                    wishlistedProducts.add(productId);
+                                    BlocProvider.of<wishlist.WishlistBloc>(
+                                      context,
+                                    ).add(
+                                      wishlist.DeleteProducts(
+                                        lstProduct[index].id ?? 0,
+                                      ),
+                                    );
                                   }
                                 });
                               },
-                              icon:
-                                  wishlistedProducts.contains(
-                                    lstProduct[index].id ?? index,
-                                  )
+                              icon: lstProduct[index].isFavorite == true
                                   ? Icon(
                                       CupertinoIcons.heart_fill,
                                       color: AppColor.primary,

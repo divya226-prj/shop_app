@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:shop_app/database/wishlist_database.dart';
-import 'package:shop_app/database/wishlist_database.dart' as dbShopApp;
+import 'package:shop_app/database/cart_database.dart';
+import 'package:shop_app/database/cart_database.dart' as dbShopApp;
 import 'package:shop_app/model/product_model.dart';
 import 'package:shop_app/repository/apprepository.dart';
 
@@ -20,6 +20,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<FetchProducts>(loadProducts);
     on<SearchQueryChanged>(searchProducts);
     on<AddProductToCart>(cartProducts);
+    on<AddProductToWishlist>(addproductsToWishlist);
   }
 
   Future<void> loadProducts(
@@ -28,6 +29,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ) async {
     emit(ProductLoading());
     lstProduct = await apprepository.fetchproducts();
+
+    var wishlistProducts = await dbShopApp.readAllForFav();
+
+    for (var wishproduct in wishlistProducts) {
+      int index = (lstProduct ?? []).indexWhere(
+        (product) => wishproduct.id == product.id,
+      );
+      if (index != -1) {
+        lstProduct?[index].isFavorite = true;
+      }
+      // lstProduct!.firstWhere((product) => wishproduct.id == product.id);
+    }
 
     emit(ProductLoaded(lstProduct ?? []));
   }
@@ -58,6 +71,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
     try {
       await dbShopApp.add(event.product);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> addproductsToWishlist(
+    AddProductToWishlist event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(WishlistLoading());
+    try {
+      await dbShopApp.addForFav(event.product);
     } catch (e) {
       print(e.toString());
     }

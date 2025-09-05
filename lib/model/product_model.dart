@@ -5,12 +5,14 @@ class Product {
   String? title;
   String? slug;
   int? price;
+
   String? description;
   Category? category;
   List<String>? images;
   String? creationAt;
   String? updatedAt;
   bool? isFavorite;
+  int? quantity;
 
   Product({
     this.id,
@@ -23,7 +25,10 @@ class Product {
     this.creationAt,
     this.updatedAt,
     this.isFavorite,
+
+    this.quantity,
   });
+
   Product copy({
     int? id,
     String? title,
@@ -35,6 +40,7 @@ class Product {
     String? creationAt,
     String? updatedAt,
     bool? isFavorite,
+    int? quantity,
   }) => Product(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -46,42 +52,93 @@ class Product {
     creationAt: creationAt ?? this.creationAt,
     updatedAt: updatedAt ?? this.updatedAt,
     isFavorite: isFavorite ?? this.isFavorite,
+    quantity: quantity ?? this.quantity,
   );
 
   Product.fromJson(Map<String, dynamic> json) {
     try {
-      id = json['id'] as int;
+      id = json['id'];
       title = json['title'];
       slug = json['slug'];
-
-      price = json['price'] as int;
+      price = json['price'];
       description = json['description'];
       category = json['category'] != null
-          ? new Category.fromJson(json['category'])
+          ? Category.fromJson(json['category'])
           : null;
-      images = json['images'].cast<String>();
+      images = json['images'] != null ? List<String>.from(json['images']) : [];
       creationAt = json['creationAt'];
       updatedAt = json['updatedAt'];
+      quantity = json['quantity'] ?? 0;
+
+      isFavorite = json['isFavorite'] == 1 || json['isFavorite'] == true;
     } catch (e) {
-      print(e);
+      print('Error parsing Product.fromJson: $e');
+    }
+  }
+
+  Product.sqlfromJson(Map<String, dynamic> json) {
+    try {
+      id = json['id'];
+      title = json['title'];
+      slug = json['slug'];
+      price = json['price'];
+      description = json['description'];
+      category = json['category'] != null
+          ? Category.fromJson(jsonDecode(json['category']))
+          : null;
+      images = json['images'] != null
+          ? List<String>.from(jsonDecode(json['images']))
+          : [];
+      creationAt = json['creationAt'];
+      updatedAt = json['updatedAt'];
+      quantity = json['quantity'] ?? 0;
+
+      isFavorite = json['isFavorite'] == 1 || json['isFavorite'] == true;
+    } catch (e) {
+      print('Error parsing Product.sqlfromJson: $e');
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['slug'] = this.slug;
-    data['price'] = this.price;
-    data['description'] = this.description;
-    'category';
-    category != null ? jsonEncode(category!.toJson()) : null;
-    'images';
-    images != null ? jsonEncode(images) : null;
-    data['creationAt'] = this.creationAt;
-    data['updatedAt'] = this.updatedAt;
-    'isFavorite';
-    isFavorite == true ? 1 : 0;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['title'] = title;
+    data['slug'] = slug;
+    data['price'] = price;
+    data['description'] = description;
+
+    if (category != null) {
+      data['category'] = category!.toJson();
+    }
+    if (images != null) {
+      data['images'] = images;
+    }
+    data['creationAt'] = creationAt;
+    data['updatedAt'] = updatedAt;
+    data['isFavorite'] = isFavorite == true ? 1 : 0;
+    data['quantity'] = quantity;
+
+    return data;
+  }
+
+  Map<String, dynamic> sqltoJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['title'] = title;
+    data['slug'] = slug;
+    data['price'] = price;
+    data['description'] = description;
+    if (category != null) {
+      data['category'] = jsonEncode(category!.toJson());
+    }
+    if (images != null) {
+      data['images'] = jsonEncode(images);
+    }
+    data['creationAt'] = creationAt;
+    data['updatedAt'] = updatedAt;
+    data['isFavorite'] = isFavorite == true ? 1 : 0;
+    data['quantity'] = quantity;
+
     return data;
   }
 
@@ -92,14 +149,13 @@ class Product {
       'slug': slug,
       'price': price,
       'description': description,
-
       'category_id': category?.id,
       'category_name': category?.name,
-
       'images': images != null ? images!.join(',') : null,
       'creationAt': creationAt,
       'updatedAt': updatedAt,
       'isFavorite': isFavorite == true ? 1 : 0,
+      'quantity': quantity,
     };
   }
 
@@ -110,15 +166,16 @@ class Product {
       slug: map['slug'],
       price: map['price'],
       description: map['description'],
-      category: Category(id: map['category_id'], name: map['category_name']),
+      category: (map['category_id'] != null || map['category_name'] != null)
+          ? Category(id: map['category_id'], name: map['category_name'])
+          : null,
       images: map['images'] != null ? map['images'].split(',') : [],
       creationAt: map['creationAt'],
       updatedAt: map['updatedAt'],
       isFavorite: map['isFavorite'] == 1,
+      quantity: map['quantity'] ?? 1,
     );
   }
-
-  static where(bool Function(dynamic Product) param0) {}
 }
 
 class Category {
@@ -148,13 +205,13 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['slug'] = this.slug;
-    data['image'] = this.image;
-    data['creationAt'] = this.creationAt;
-    data['updatedAt'] = this.updatedAt;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['slug'] = slug;
+    data['image'] = image;
+    data['creationAt'] = creationAt;
+    data['updatedAt'] = updatedAt;
     return data;
   }
 }

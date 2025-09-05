@@ -10,6 +10,11 @@ class AddProductToCart extends ProductEvent {
   AddProductToCart(this.product);
 }
 
+class AddProductToWishlist extends ProductEvent {
+  final Product product;
+  AddProductToWishlist(this.product);
+}
+
 class SearchQueryChanged extends ProductEvent {
   final String query;
   SearchQueryChanged(this.query);

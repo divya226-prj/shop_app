@@ -11,4 +11,5 @@ class AppColor {
   static const texttertiary = Color(0xFF4392F9);
   static const textontertiary = Color(0xFFBBBBBB);
   static const textsubtext = Color(0xFF828282);
+  static const backgroundcolor = Color.fromARGB(173, 249, 249, 249);
 }
