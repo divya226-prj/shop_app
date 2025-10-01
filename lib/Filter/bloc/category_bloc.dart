@@ -15,6 +15,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   List<Category>? lstCategory;
   CategoryBloc(this.apprepository) : super(CategoryInitial()) {
     on<FetchCategories>(loadProducts);
+    on<ToggleCategoryCheckbox>(onToggleCategoryCheckbox);
   }
 
   Future<void> loadProducts(
@@ -24,5 +25,25 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     emit(CategoryLoading());
     lstCategory = await apprepository.fetchCategories();
     emit(CategoryLoaded(lstCategory ?? []));
+  }
+
+  Future<void> onToggleCategoryCheckbox(
+    ToggleCategoryCheckbox event,
+    Emitter<CategoryState> emit,
+  ) async {
+    if (state is CategoryLoaded) {
+      final currentState = state as CategoryLoaded;
+
+      final updatedCategories = currentState.category.map((category) {
+        if (category.id == event.categoryId) {
+          return category.copyWith(isChecked: !category.isChecked);
+        }
+        return category;
+      }).toList();
+
+      lstCategory = updatedCategories;
+
+      emit(CategoryLoaded(updatedCategories));
+    }
   }
 }

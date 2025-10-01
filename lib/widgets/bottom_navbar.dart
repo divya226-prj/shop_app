@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/bloc/bloc/bloc/cart_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
-import 'package:shop_app/model/category_model.dart';
 import 'package:shop_app/views/home/cart_screen.dart';
 import 'package:shop_app/views/home/home_page.dart';
 import 'package:shop_app/views/home/search_screen.dart';
@@ -61,10 +61,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                 int count = 0;
                 if (state is CartLoaded) {
                   count = state.cartItems.length;
+                  context.read<CartBloc>().add(FetchProducts());
                 }
                 return Badge(
                   label: Text('${count}'),
-
                   child: Icon(Icons.shopping_cart_outlined),
                 );
               },

@@ -15,6 +15,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   final shopAppDatabase = ShopAppDatabase.instance;
   List<Product> cart = [];
   final Apprepository apprepository;
+
   List<Product>? lstProduct;
   ProductBloc(this.apprepository) : super(ProductInitial()) {
     on<FetchProducts>(loadProducts);
@@ -28,7 +29,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Emitter<ProductState> emit,
   ) async {
     emit(ProductLoading());
-    lstProduct = await apprepository.fetchproducts();
+    lstProduct = await apprepository.fetchproducts(
+      event.categoryId,
+      event.minPrice,
+      event.maxPrice,
+    );
 
     var wishlistProducts = await dbShopApp.readAllForFav();
 

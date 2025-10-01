@@ -178,6 +178,43 @@ class Product {
   }
 }
 
+// class Category {
+//   int? id;
+//   String? name;
+//   String? slug;
+//   String? image;
+//   String? creationAt;
+//   String? updatedAt;
+
+//   Category({
+//     this.id,
+//     this.name,
+//     this.slug,
+//     this.image,
+//     this.creationAt,
+//     this.updatedAt,
+//   });
+
+//   Category.fromJson(Map<String, dynamic> json) {
+//     id = json['id'];
+//     name = json['name'];
+//     slug = json['slug'];
+//     image = json['image'];
+//     creationAt = json['creationAt'];
+//     updatedAt = json['updatedAt'];
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = {};
+//     data['id'] = id;
+//     data['name'] = name;
+//     data['slug'] = slug;
+//     data['image'] = image;
+//     data['creationAt'] = creationAt;
+//     data['updatedAt'] = updatedAt;
+//     return data;
+//   }
+// }
 class Category {
   int? id;
   String? name;
@@ -186,6 +223,8 @@ class Category {
   String? creationAt;
   String? updatedAt;
 
+  bool isChecked;
+
   Category({
     this.id,
     this.name,
@@ -193,25 +232,47 @@ class Category {
     this.image,
     this.creationAt,
     this.updatedAt,
+    this.isChecked = false,
   });
 
-  Category.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    slug = json['slug'];
-    image = json['image'];
-    creationAt = json['creationAt'];
-    updatedAt = json['updatedAt'];
-  }
+  Category.fromJson(Map<String, dynamic> json)
+    : id = json['id'],
+      name = json['name'],
+      slug = json['slug'],
+      image = json['image'],
+      creationAt = json['creationAt'],
+      updatedAt = json['updatedAt'],
+      isChecked = false;
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
     data['slug'] = slug;
     data['image'] = image;
     data['creationAt'] = creationAt;
     data['updatedAt'] = updatedAt;
+
     return data;
+  }
+
+  Category copyWith({
+    int? id,
+    String? name,
+    String? slug,
+    String? image,
+    String? creationAt,
+    String? updatedAt,
+    bool? isChecked,
+  }) {
+    return Category(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      slug: slug ?? this.slug,
+      image: image ?? this.image,
+      creationAt: creationAt ?? this.creationAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isChecked: isChecked ?? this.isChecked,
+    );
   }
 }

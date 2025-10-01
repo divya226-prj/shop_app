@@ -1,71 +1,87 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shop_app/Filter/bloc/category_bloc.dart';
 import 'package:shop_app/constants/app_color.dart';
-import 'package:shop_app/model/category_model.dart';
 import 'package:shop_app/model/product_model.dart';
-import 'package:shop_app/views/home/search_screen.dart';
 import 'package:shop_app/widgets/styled_button.dart';
 
 class FilterScreen extends StatefulWidget {
-  const FilterScreen({super.key});
+  final List<int>? initialSelectedCategoryIds;
+  final RangeValues? initialPriceRange;
+
+  const FilterScreen({
+    super.key,
+    this.initialSelectedCategoryIds,
+    this.initialPriceRange,
+  });
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
 }
 
 class _FilterScreenState extends State<FilterScreen> {
-  //  int? categoryId;
-  // String? selectedCategoryId;
-  // List<int> selectedCategoryIds = [];
-
   List<Category> lstCategory = [];
-  List<bool> categoryChecks = [];
-
-  RangeValues currentPriceRange = RangeValues(100, 10000);
+  RangeValues currentPriceRange = const RangeValues(100, 10000);
 
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<CategoryBloc>(context).add(FetchCategories());
+    final categoryBloc = BlocProvider.of<CategoryBloc>(context);
+    if (categoryBloc.lstCategory == null) {
+      categoryBloc.add(FetchCategories());
+    } else {
+      lstCategory = categoryBloc.lstCategory!;
+    }
+
+    if (widget.initialPriceRange != null) {
+      currentPriceRange = widget.initialPriceRange!;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.textonsecondary,
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(Icons.close),
+          child: const Icon(Icons.close),
         ),
-        title: Text("Filter"),
+        title: const Text("Filter"),
       ),
-
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoryLoading) {
-            Center(child: CircularProgressIndicator());
+            const Center(child: CircularProgressIndicator());
           }
           if (state is CategoryLoaded) {
             setState(() {
               lstCategory = state.category;
-              categoryChecks = List.generate(lstCategory.length, (_) => false);
+
+              if (widget.initialSelectedCategoryIds != null) {
+                for (var category in lstCategory) {
+                  if (widget.initialSelectedCategoryIds!.contains(
+                    category.id,
+                  )) {
+                    category.isChecked = false;
+                  }
+                }
+              }
             });
           }
         },
         builder: (context, state) {
           return Column(
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
               Expanded(
                 child: Container(
                   height: MediaQuery.sizeOf(context).height / 1.2,
                   width: MediaQuery.sizeOf(context).width,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(51, 158, 158, 158),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(51, 158, 158, 158),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -74,22 +90,20 @@ class _FilterScreenState extends State<FilterScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 30,
                           vertical: 25,
                         ),
                         child: Text(
                           "Categories",
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w100,
-                                color: Colors.black87,
-                              ),
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
-
                       if (state is CategoryLoaded) ...[
                         Expanded(
                           child: ListView.builder(
@@ -99,20 +113,19 @@ class _FilterScreenState extends State<FilterScreen> {
                               return CheckboxListTile(
                                 title: Text(
                                   category.name ?? "",
-                                  style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        color: categoryChecks[index]
-                                            ? AppColor.primary
-                                            : Colors.black87,
-                                      ),
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                    color: category.isChecked
+                                        ? AppColor.primary
+                                        : Colors.black87,
+                                  ),
                                 ),
-                                value: categoryChecks[index],
-                                onChanged: (val) {
-                                  setState(() {
-                                    categoryChecks[index] = val!;
-                                  });
+                                value: category.isChecked,
+                                onChanged: (_) {
+                                  context.read<CategoryBloc>().add(
+                                    ToggleCategoryCheckbox(category.id ?? 0),
+                                  );
                                 },
                                 activeColor: AppColor.primary,
                                 controlAffinity:
@@ -122,32 +135,29 @@ class _FilterScreenState extends State<FilterScreen> {
                           ),
                         ),
                       ],
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 30,
                           vertical: 25,
                         ),
                         child: Text(
                           "Price",
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w100,
-                                color: Colors.black87,
-                              ),
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
                       Column(
                         children: [
                           Text(
                             "${currentPriceRange.start.round()} - ${currentPriceRange.end.round()}",
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  color: Colors.black54,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w100,
-                                ),
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w100,
+                            ),
                           ),
                           SliderTheme(
                             data: SliderThemeData(
@@ -177,24 +187,18 @@ class _FilterScreenState extends State<FilterScreen> {
                 ),
               ),
               SafeArea(
-                minimum: EdgeInsets.all(15),
+                minimum: const EdgeInsets.all(15),
                 child: CustomButton("Apply Filter", () {
-                  int? selectedId;
+                  List<int> selectedCategoryIds = lstCategory
+                      .where((category) => category.isChecked)
+                      .map((category) => category.id!)
+                      .toList();
 
-                  for (int i = 0; i < lstCategory.length; i++) {
-                    if (categoryChecks[i]) {
-                      selectedId = lstCategory[i].id;
-                      break;
-                    }
-                  }
-                  // Navigator.pop(context, selectedId);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SearchScreen(selectedId: selectedId),
-                    ),
-                  );
+                  Navigator.pop(context, {
+                    "selectedCategoryIds": selectedCategoryIds,
+                    "minPrice": currentPriceRange.start.round(),
+                    "maxPrice": currentPriceRange.end.round(),
+                  });
                 }),
               ),
             ],

@@ -11,8 +11,17 @@ import 'package:shop_app/widgets/hometextfield.dart';
 
 class SearchScreen extends StatefulWidget {
   final int? selectedId;
+  final int? minPrice;
+  final int? maxPrice;
+  // int? totalProducts;
 
-  SearchScreen({super.key, this.selectedId});
+  SearchScreen({
+    super.key,
+    this.selectedId,
+    this.minPrice,
+    this.maxPrice,
+    // this.totalProducts,
+  });
 
   @override
   State<SearchScreen> createState() => _ProductScreenState();
@@ -21,57 +30,67 @@ class SearchScreen extends StatefulWidget {
 class _ProductScreenState extends State<SearchScreen> {
   List<Product> lstProduct = [];
   bool iswishlisted = false;
-
+  int totalCount = 0;
   @override
   void initState() {
     super.initState();
+
     BlocProvider.of<ProductBloc>(context).add(FetchProducts());
+    BlocProvider.of<ProductBloc>(context).add(
+      FetchProducts(
+        categoryId: widget.selectedId,
+        minPrice: widget.minPrice?.toDouble(),
+        maxPrice: widget.maxPrice?.toDouble(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(145, 249, 249, 249),
+      backgroundColor: AppColor.textonsecondary,
       appBar: _buildappbar,
 
       body: Column(
         children: [
           _buildcolumnhometxtfield,
           SizedBox(height: 30),
-
           BlocConsumer<ProductBloc, ProductState>(
             listener: (context, state) {
-              // if (state is ProductLoaded) {
-              //   lstProduct = state.products;
-              // }
+              List<Product> updatedList = [];
+
               if (state is ProductLoaded) {
-                if (widget.selectedId != null) {
-                  lstProduct = state.products
-                      .where(
-                        (product) => widget.selectedId == product.category?.id,
-                      )
-                      .toList();
-                } else {
-                  lstProduct = state.products;
-                }
+                updatedList = state.products.where((product) {
+                  return (widget.selectedId == null ||
+                          product.category?.id == widget.selectedId) &&
+                      (widget.minPrice == null ||
+                          product.price! >= widget.minPrice!) &&
+                      (widget.maxPrice == null ||
+                          product.price! <= widget.maxPrice!);
+                }).toList();
+              } else if (state is SearchLoaded) {
+                updatedList = state.products.where((product) {
+                  return (widget.selectedId == null ||
+                          product.category?.id == widget.selectedId) &&
+                      (widget.minPrice == null ||
+                          product.price! >= widget.minPrice!) &&
+                      (widget.maxPrice == null ||
+                          product.price! <= widget.maxPrice!);
+                }).toList();
               }
 
-              if (state is SearchLoaded) {
-                lstProduct = state.products;
-              }
+              setState(() {
+                lstProduct = updatedList;
+                totalCount = lstProduct.length;
+              });
             },
-
             builder: (context, state) {
-              return BlocBuilder<ProductBloc, ProductState>(
-                builder: (context, state) {
-                  if (state is ProductLoading) {
-                    return Expanded(
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  return _buildgridviewbuilder(context);
-                },
-              );
+              if (state is ProductLoading || state is SearchLoading) {
+                return Expanded(
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              return _buildgridviewbuilder(context);
             },
           ),
         ],
@@ -95,7 +114,12 @@ class _ProductScreenState extends State<SearchScreen> {
           Container(
             margin: EdgeInsets.only(left: 10),
             child: Text(
-              '${lstProduct.length}+ Items',
+              // "Total Products : $totalProducts",
+              // "${lstProduct.isNotEmpty ? lstProduct.length : 0}+ Items",
+              "$totalCount+ Items",
+              // '${lstProduct.length}+ Items',
+
+              // '${widget.totalProducts}+Items',
               style: TextTheme.of(context).titleLarge?.copyWith(
                 color: AppColor.textPrimary,
                 fontSize: 20,
@@ -106,34 +130,81 @@ class _ProductScreenState extends State<SearchScreen> {
 
           // SizedBox(height: 20),
           Spacer(),
-          Card(
-            child: Container(
-              height: 30,
-              width: 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: AppColor.textonsecondary,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Sort",
-                    style: TextTheme.of(context).titleLarge?.copyWith(
-                      color: Colors.black54,
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  Icon(Icons.sort),
+          GestureDetector(
+            onTap: () async {
+              final selected = await showMenu(
+                context: context,
+                position: RelativeRect.fromLTRB(200, 200, 0, 0),
+                items: [
+                  PopupMenuItem(value: 'asc', child: Text('Ascending')),
+                  PopupMenuItem(value: 'desc', child: Text('Descending')),
                 ],
+              );
+
+              if (selected == 'asc') {
+                setState(() {
+                  lstProduct.sort((a, b) => a.price!.compareTo(b.price!));
+                });
+              } else if (selected == 'desc') {
+                setState(() {
+                  lstProduct.sort((a, b) => b.price!.compareTo(a.price!));
+                });
+              }
+            },
+            child: Card(
+              child: Container(
+                height: 30,
+                width: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: AppColor.textonsecondary,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Sort",
+                      style: TextTheme.of(context).titleLarge?.copyWith(
+                        color: Colors.black54,
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    Icon(Icons.sort),
+                  ],
+                ),
               ),
             ),
           ),
+
           GestureDetector(
             onTap: () async {
-              Navigator.pushNamed(context, AppRoutes.filterScreen);
+              final result = await Navigator.pushNamed(
+                context,
+                AppRoutes.filterScreen,
+              );
+
+              if (result != null && result is Map<String, dynamic>) {
+                List<int> selectedCategoryIds = List<int>.from(
+                  result['selectedCategoryIds'] ?? [],
+                );
+                int? minPrice = result['minPrice'];
+                int? maxPrice = result['maxPrice'];
+
+                int? selectedId = selectedCategoryIds.isNotEmpty
+                    ? selectedCategoryIds.first
+                    : null;
+
+                BlocProvider.of<ProductBloc>(context).add(
+                  FetchProducts(
+                    categoryId: selectedId,
+                    minPrice: minPrice?.toDouble(),
+                    maxPrice: maxPrice?.toDouble(),
+                  ),
+                );
+              }
             },
+
             child: Card(
               child: Container(
                 height: 30,

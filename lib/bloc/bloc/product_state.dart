@@ -7,7 +7,8 @@ final class ProductLoading extends ProductState {}
 
 final class ProductLoaded extends ProductState {
   final List<Product> products;
-  ProductLoaded(this.products);
+  final int totalCount;
+  ProductLoaded(this.products) : totalCount = products.length;
 }
 
 final class ProductInitial extends ProductState {}
@@ -16,7 +17,8 @@ final class SearchLoading extends ProductState {}
 
 final class SearchLoaded extends ProductState {
   final List<Product> products;
-  SearchLoaded(this.products);
+  final int totalCount;
+  SearchLoaded(this.products) : totalCount = products.length;
 }
 
 final class SearchInitial extends ProductState {}

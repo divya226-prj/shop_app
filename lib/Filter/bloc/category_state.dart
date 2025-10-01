@@ -10,4 +10,8 @@ final class CategoryLoading extends CategoryState {}
 final class CategoryLoaded extends CategoryState {
   final List<Category> category;
   CategoryLoaded(this.category);
+
+  CategoryLoaded copyWith({List<Category>? category}) {
+    return CategoryLoaded(category ?? this.category);
+  }
 }

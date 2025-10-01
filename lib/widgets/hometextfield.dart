@@ -12,6 +12,7 @@ class Hometextfield extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       height: 50,
+
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: const Color.fromARGB(205, 243, 241, 241),
@@ -34,7 +35,9 @@ class Hometextfield extends StatelessWidget {
           suffixIcon: Icon(Icons.mic, color: AppColor.textSecondary, size: 20),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 20),
+
+          contentPadding: const EdgeInsets.only(top: 15),
+
           hintText: "Search any Product",
           hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: AppColor.subtext,
